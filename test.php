@@ -269,7 +269,6 @@ hr{
 }
 
 #contentContainer {
-	position: relative;
     display: flex;
 	margin-left: 0;
     /* Add the following properties to enable horizontal and vertical scrolling */
@@ -278,8 +277,7 @@ hr{
     //max-height: calc(100vh - 250px);
 	height:auto;
     transition: margin-left 1s ease; /* Add transition to margin-left property */
-	z-index:1;
-	//adding-bottom:1%
+	z-index:0;
 }
 
 #Toggle:checked + label #active::after{
@@ -338,25 +336,50 @@ hr{
 
 .modal {
     display: none;
-	margin-top:-20%;
-	margin-left:25%;
-	width:50%;
+	margin-top:-18%;
 }
-.modal-content {
-    background-color: #f2f2f2; /* Use the solid color you prefer */
+.modal2 {
+    display: none;
+	margin-top:-30%;
+
+}
+
+#moveJobsPop{
+    background-color: #f2f2f2;
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #ccc;
-    width: 50%;
-	position: relative;
+    width: 30%;
+	height:40%;
     text-align: center;
     border-radius: 5px;
     box-shadow: 0px 0px 10px 0px #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
     transition: fade-in 1s ease;
-	z-index:2;
 }
-
-
+.modal-content {
+    background-color: #f2f2f2;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    width: 30%;
+	height:20%;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    transition: fade-in 1s ease;
+}
 
 .close {
     color: #aaa;
@@ -364,8 +387,18 @@ hr{
     font-size: 28px;
     font-weight: bold;
 }
+.close1 {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
 
 .close:hover {
+    color: red;
+    cursor: pointer;
+}
+.close1:hover {
     color: red;
     cursor: pointer;
 }
@@ -398,11 +431,6 @@ li {
 
 #confirmDelete:hover {
     background-color: #cc0000;
-}
-
-#myModal{
-	
-	width:50%;
 }
 
 
@@ -500,6 +528,7 @@ if (isset($_SESSION['defaultWeek'])) {
                 <option selected disabled>No weeks available for this month</option>
             </select>
 			</div>
+			
 			<div>
 <input type="checkbox" id="Toggle">
 
@@ -522,12 +551,11 @@ if (isset($_SESSION['defaultWeek'])) {
 <div id="errormsgs"></div>
 
 
-	<div id="contentContainer">
-
-</div>
+	<div id="contentContainer"></div>
     <br>
 <button id="deletebutton" class="botbuttons1" onclick="deletejob()"> Delete </button>&nbsp;
-<button id="fill-green" class="botbuttons2" onclick="openPopup()"> Move </button>
+<button id="fill-green" class="botbuttons2" onclick="initPop()"> Move </button>
+	<div id="caluculationsContainer"></div>
 <div id="confirmationModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -537,53 +565,43 @@ if (isset($_SESSION['defaultWeek'])) {
         <button id="confirmDelete">Yes, delete</button>
     </div>
 </div>
+   <div id="moveJobsPop" class="modal2">
+   <h3>Select week to move selected jobs:<span class="close1">&times;</span>
+        <div id="yearContainerPop">
+            <label for="yearPop">Select Year: </label>
+            <select id="yearPop" onchange="updateWeeksPop()">
+                <!-- The years will be populated dynamically -->
+            </select>
+        </div>
 
- <div id="myModal" class="modal">
- 
-        <div class="modal-content">
-            <!-- Add your week and checkboxes here -->
-            <div id="moveJobsPop">
-			<span class="close" onclick="closePopup()">&times;</span> 
-			<h4 style="font-weight: bold; color: #b30000;">Please select a week to move the selected jobs</h4>
+        <div id="monthsContainerPop">
+            <label for="monthPop">Select Month: </label>
+            <select id="monthPop" onchange="updateWeeksPop()">
+                <!-- The months will be populated dynamically -->
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+            </select>
+        </div>
 
-		
-                <div id="yearContainerPop">
-                    <label for="yearPop">Select Year: </label>
-                    <select id="yearPop"  onchange="updateWeeksPop()">
-                        <!-- The years will be populated dynamically -->
-                    </select>
-                </div>
-
-                <div id="monthsContainerPop">
-                    <label for="monthPop">Select Month: </label>
-                    <select id="monthPop"  onchange="updateWeeksPop()">
-                        <!-- The months will be populated dynamically -->
-                        <option value="January">January</option>
-						<option value="February">February</option>
-						<option value="March">March</option>
-						<option value="April">April</option>
-						<option value="May">May</option>
-						<option value="June">June</option>
-						<option value="July">July</option>
-						<option value="August">August</option>
-						<option value="September">September</option>
-						<option value="October">October</option>
-						<option value="November">November</option>
-						<option value="December">December</option>
-                    </select>
-                </div>
-
-                <div id="weekContainerPop">
-                    <label for="weekPop">Select Week:</label>
-                    <select id="weekPop">
-                        <!-- Week options will be added dynamically -->
-                    </select>
-                </div>
-            </div>
-			<button id="fill" onClick="movejob1()">Move</button>
-  </div>
-            </div>
-
+        <div id="weekContainerPop">
+            <label for="weekPop">Select Week:</label>
+            <select id="weekPop">
+                <!-- Week options will be added dynamically -->
+            </select>
+        </div>
+		<button id="fill" onclick="movejob()">Move</button>
+		<h4 id="errormsgmove"></h4>
+    </div>
 
 
 
@@ -615,55 +633,47 @@ if (isset($_SESSION['defaultWeek'])) {
       yearDropdown.value = currentYear; // Set current year as default selected
     }
 
-    // Function to get the weeks of a given month and year
-    function getWeeksOfMonth(year, month) {
-      const weeks = [];
-      const firstDay = new Date(year, month, 1);
-      const nextFirstDay = new Date(year, month + 1, 1);
+function getWeeksOfMonth(year, month) {
+  const weeks = [];
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
 
-      // Adjust the first day to the first Monday of the month
-      while (firstDay.getDay() !== 1) {
-        firstDay.setDate(firstDay.getDate() + 1);
-      }
+  let currentWeek = [];
+  let currentDate = new Date(firstDay);
 
-      let currentWeek = [new Date(firstDay)]; // Start a new week with the first Monday
-      var currentDate;
-
-      for (let day = firstDay.getDate() + 1; day <= new Date(year, month + 1, 0).getDate(); day++) {
-        currentDate = new Date(year, month, day);
-
-        if (currentDate.getDay() === 1) {
-          weeks.push(currentWeek);
-          currentWeek = [currentDate]; // Start a new week
-        } else {
-          currentWeek.push(currentDate);
-        }
-      }
-
-      for (let day2 = nextFirstDay.getDate(); day2 < nextFirstDay.getDate(); day2++) {
-        currentDate2 = new Date(year, month + 1, day2);
-
-        if (currentDate2.getDay() === 1) {
-          weeks.push(currentWeek);
-          currentWeek = [currentDate2]; // Start a new week
-        } else {
-          currentWeek.push(currentDate2);
-        }
-      }
-
+  while (currentDate <= lastDay) {
+    if (currentDate.getDay() === 1) {
       if (currentWeek.length > 0) {
         weeks.push(currentWeek);
       }
-	  
-
-      return weeks;
-	  
+      currentWeek = [new Date(currentDate)];
+    } else {
+      currentWeek.push(new Date(currentDate));
     }
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  	  // Check if the first week contains only Saturday and Sunday and remove it
+  if (weeks.length > 0 && weeks[0].length <= 2) {
+    weeks.shift();
+  }
+
+  // Add the last week if it's not empty
+  if (currentWeek.length > 0) {
+    weeks.push(currentWeek);
+  }
+
+  return weeks;
+}
+
+
+
+
+
 
     // Function to update the months and weeks based on user selection
     function updateMonthsAndWeeks() {
       const monthsContainer = document.getElementById("months-container");
-      monthsContainer.innerHTML = ""; // Clear existing tabs
+      monthsContainer.innerHTML = "";
 
       for (let i = 0; i < months.length; i++) {
         const tab = document.createElement("div");
@@ -676,7 +686,6 @@ if (isset($_SESSION['defaultWeek'])) {
       currentMonthIndex = new Date().getMonth();
       highlightActiveTab(months[currentMonthIndex]);
       updateWeeks(months[currentMonthIndex]);
-
 
     }
 
@@ -788,175 +797,157 @@ function deletejob() {
     const closeButton = document.querySelector('.close');
     closeButton.onclick = function() {
         modal.style.display = 'none';
+        modal2.style.display = 'none';
     };
 }
 
-        function populateYearsPop() {
-            const yearDropdown = document.getElementById("yearPop");
-            const yearsToShow = 15; // Total years to display, 10 previous years and 5 forward years
-            const currentYearPop = new Date().getFullYear();
 
-            for (let i = currentYearPop - 10; i <= currentYearPop + 4; i++) {
-                const option = document.createElement("option");
-                option.value = i;
-                option.text = i;
-                yearDropdown.appendChild(option);
-            }
+    function populateYearsPop() {
+        const yearDropdown = document.getElementById("yearPop");
+        const yearsToShow = 15; // Total years to display, 10 previous years and 5 forward years
+        const currentYearPop = new Date().getFullYear();
 
-            yearDropdown.value = currentYearPop; // Set current year as the default selected
+        for (let i = currentYearPop - 10; i <= currentYearPop + 4; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.text = i;
+            yearDropdown.appendChild(option);
         }
 
-function updateWeeksPop() {
-    const yearDropdown = document.getElementById("yearPop");
-    const monthDropdown = document.getElementById("monthPop");
-    const weekDropdown = document.getElementById("weekPop");
-
-    const selectedYearPop = parseInt(yearDropdown.value, 10);
-    const selectedMonthPop = monthDropdown.value;
-    const monthIndexPop = months.indexOf(selectedMonthPop);
-
-    // Clear the existing options and populate the week dropdown
-    weekDropdown.innerHTML = "";
-
-    // Find the first Monday of the selected month
-    const firstDayOfMonth = new Date(selectedYearPop, monthIndexPop, 1).getDay();
-    const offset = (8 - firstDayOfMonth) % 7; // Calculate the offset to the first Monday
-    let currentDay = 1 + offset;
-
-    // Calculate the number of days in the selected month
-    const daysInMonthPop = new Date(selectedYearPop, monthIndexPop + 1, 0).getDate();
-
-    let weekNumber = 1;
-    while (currentDay <= daysInMonthPop) {
-        const startOfWeekPop = new Date(selectedYearPop, monthIndexPop, currentDay);
-
-        // Calculate the end of the week (Sunday)
-        let endOfWeekPop = new Date(startOfWeekPop);
-        endOfWeekPop.setDate(startOfWeekPop.getDate() + 6);
-
-        const formattedWeekPop = `Week ${weekNumber} (${formatDatePop(startOfWeekPop)} to ${formatDatePop(endOfWeekPop)})`;
-        const weekOptionPop = document.createElement("option");
-        weekOptionPop.value = `${formatDatePop(startOfWeekPop)},${formatDatePop(endOfWeekPop)}`;
-        weekOptionPop.textContent = formattedWeekPop;
-        weekDropdown.appendChild(weekOptionPop);
-
-        // Move to the next week
-        currentDay += 7;
-        weekNumber++;
+        yearDropdown.value = currentYearPop; // Set current year as the default selected
     }
 
-    // Call the function to load data based on the selected week
-    loadDataPop(weekDropdown.value);
-}
+    function updateWeeksPop() {
+        const yearDropdown = document.getElementById("yearPop");
+        const monthDropdown = document.getElementById("monthPop");
+        const weekDropdown = document.getElementById("weekPop");
 
+        const selectedYearPop = parseInt(yearDropdown.value, 10);
+        const selectedMonthPop = monthDropdown.value;
+        const monthIndexPop = months.indexOf(selectedMonthPop);
+				const selectedWeek = weekDropdown.value;
+				console.log('test:'+selectedWeek);
 
+        // Clear the existing options and populate the week dropdown
+        weekDropdown.innerHTML = "";
 
-        function formatDatePop(date) {
-            const yearPop = date.getFullYear();
-            const monthPop = String(date.getMonth() + 1).padStart(2, "0");
-            const dayPop = String(date.getDate()).padStart(2, "0");
-            return `${dayPop}-${monthPop}-${yearPop}`;
+        // Calculate the number of days in the selected month
+        const daysInMonthPop = new Date(selectedYearPop, monthIndexPop + 1, 0).getDate();
+
+        // Calculate the number of weeks
+        let weekNumber = 1;
+        let startDay = 1; // Default start day for the first week
+        let endDay = 0; // Default end day for the first week
+
+        for (let day = 1; day <= daysInMonthPop; day++) {
+            const currentDate = new Date(selectedYearPop, monthIndexPop, day);
+            const currentDay = currentDate.getDay(); // 0 for Sunday, 1 for Monday, ...
+
+            if (currentDay === 1) {
+                // Monday, start of a new week
+                startDay = day;
+            } else if (currentDay === 0 || day === daysInMonthPop) {
+                // Sunday or end of the month, end of the week
+                endDay = day;
+
+                // Create the week option if it has at least one weekday
+                if (endDay > startDay) {
+                    const startOfWeekPop = new Date(selectedYearPop, monthIndexPop, startDay);
+                    const endOfWeekPop = new Date(selectedYearPop, monthIndexPop, endDay);
+
+                    const formattedWeekPop = `Week ${weekNumber} (${formatDatePop(startOfWeekPop)} to ${formatDatePop(endOfWeekPop)})`;
+                    const weekOptionPop = document.createElement("option");
+                    weekOptionPop.value = `${formatDatePop(startOfWeekPop)},${formatDatePop(endOfWeekPop)}`;
+                    weekOptionPop.textContent = formattedWeekPop;
+                    weekDropdown.appendChild(weekOptionPop);
+
+                    // Update for the next week
+                    weekNumber++;
+                }
+            }
         }
 
-        function loadDataPop(selectedWeek) {
-            // Replace this with your code to load data based on the selected week
-            console.log("Data loaded for week: " + selectedWeek);
-        }
+        // Call the function to load data based on the selected week
+        loadDataPop(weekDropdown.value);
+    }
+
+    function formatDatePop(date) {
+        const yearPop = date.getFullYear();
+        const monthPop = String(date.getMonth() + 1).padStart(2, "0");
+        const dayPop = String(date.getDate()).padStart(2, "0");
+        return `${dayPop}-${monthPop}-${yearPop}`;
+    }
+
+    function loadDataPop(selectedWeek) {
+        // Replace this with your code to load data based on the selected week
+        console.log("Data loaded for week: " + selectedWeek);
+    }
 
 function initPop() {
     const currentMonthIndexPop = new Date().getMonth();
     const currentYearPop = new Date().getFullYear();
 
-    // Initial population of the year dropdown and months/weeks
+    // Initial population of the year dropdown
     populateYearsPop();
 
-    // Set the default selected values to the current month and year
-    document.getElementById("yearPop").value = currentYearPop;
-    document.getElementById("monthPop").value = months[currentMonthIndexPop];
+    // Set the default selected month to the current month
+    const monthDropdown = document.getElementById("monthPop");
+    monthDropdown.value = months[currentMonthIndexPop];
 
-    // Update weeks based on the default values
+    // Update weeks based on the selected month
     updateWeeksPop();
-}
-
-        // Call the initialization function
-       
-		function openPopup() {
-            
-			    const selectedJobIds = [];
-    const checkboxes = document.querySelectorAll('input[name="selectedJobs[]"]:checked');
-    checkboxes.forEach(function(checkbox) {
-        selectedJobIds.push(checkbox.value);
-    });
-
-    // Make sure there are selected jobs
-    if (selectedJobIds.length === 0) {
-        alert("Please select jobs to move.");
-        //return;
-    }
-			 else if (selectedJobIds.length !== 0) {initPop();
-			 const modal = document.getElementById("myModal");
-            modal.style.display = "block";}
-        }
-
-        function closePopup() {
-            const modal = document.getElementById("myModal");
-            modal.style.display = "none";
-        }
-
-function movejob1() {
-    const selectedJobIds = [];
-    const checkboxes = document.querySelectorAll('input[name="selectedJobs[]"]:checked');
-    
-    checkboxes.forEach(function(checkbox) {
-        selectedJobIds.push(checkbox.value);
-    });
-	//console.log(selectedJobIds);
-    
-    const selectedWeek = document.getElementById("weekPop").value;
-    
-    // Prepare the data to be sent as JSON
-    const data = {
-        selectedJobIds: selectedJobIds,
-        selectedWeek: selectedWeek
+	
+	const modal2 = document.getElementById('moveJobsPop');
+	modal2.style.display = 'block';
+	    const closeButton = document.querySelector('.close1');
+    closeButton.onclick = function() {
+        //modal.style.display = 'none';
+        modal2.style.display = 'none';
     };
 	
-	//console.log(selectedWeek);
-	//console.log(data);
-	
+}
 
-    // Send the data to psmovejobs.php using a POST request
-    fetch('psmovejobs.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+function movejob() {
+    // Collect the selected job IDs
+    const selectedJobIds = [];
+    const checkboxes = document.querySelectorAll('input[name="selectedJobs[]"]:checked');
+    checkboxes.forEach(function (checkbox) {
+        selectedJobIds.push(checkbox.value);
+    });
+
+    const weekDropdown = document.getElementById("weekPop");
+    const selectedWeek = weekDropdown.value;
+	const modal2 = document.getElementById('moveJobsPop');
+	const error2 = document.getElementById('errormsgmove');
+    // Prepare the data as a JSON object
+    const data = {
+        selectedJobIds: selectedJobIds,
+        selectedWeek: selectedWeek,
+    };
+
+    // Use jQuery to send the AJAX request
+    $.ajax({
+        type: "POST",
+        url: "psmovejobs.php",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        success: function (response) {
+            // Handle the response from the server here
+            if (response.success) {
+                console.log("Record updated successfully");
+				modal2.style.display = 'none';
+				
+            } else {
+                console.error("Failed to update jobs: " + response.message);
+				error2.innerHTML="Failed to move Jobs. Technical Issue";
+            }
         },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        error: function (xhr, status, error) {
+            console.error("AJAX request failed: " + error);
         }
-        return response.json();
-    })
-    .then(result => {
-        // Check if the result indicates success or failure
-        if (result.success) {
-            // Success: Load data
-            var selectedOption = $('#weekPop').val();
-            loadData(selectedOption);
-			closePopup();
-        } else {
-            // Failure: Display error message
-            const errorMsgs = document.getElementById("errormsgs");
-            errorMsgs.textContent = result.message;
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
     });
 }
 
-	
 	function getMonthName(monthIndex) {
   const months = [
     "January", "February", "March", "April",
@@ -997,7 +988,29 @@ function movejob1() {
                 console.error(xhr.responseText);
             }
         });
+		loadCal(selectedOption);
     }
+	
+	function loadCal(selectedOption){
+		
+		        $.ajax({
+            type: 'POST',
+            url: 'pscals.php', // Replace with your PHP script's URL
+            data: { option: selectedOption }, // Send data to PHP script if needed
+            success: function(response) {
+                // Update the content container with the PHP-generated content
+                $('#caluculationsContainer').html(response);
+				
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+		
+		
+	}
+	
+	
 $(document).ready(function() {
     // Function to load data and handle inline editing
 
@@ -1009,15 +1022,8 @@ $(document).ready(function() {
         var columnName = $(this).data('columnname');
             if ($(this).find('select').length > 0) {
         newValue = $(this).find('select').val(); // Get the selected value of the dropdown
-			
     } else {
-        newValue = $(this).text();
-		if(newValue.includes('%'))
-		{
-			newValue=newValue.replace('%', '');
-		newValue = parseFloat(newValue);
-		}
-						// Get the text content if it's not a dropdown
+        newValue = $(this).text(); // Get the text content if it's not a dropdown
     }
         var cell = $(this); // Store a reference to the cell element
 		
@@ -1051,8 +1057,6 @@ $.ajax({
             }
         }); 
     }); 
-	
-	
 
 
 
@@ -1061,7 +1065,8 @@ $('#week').on('change', function() {
     var selectedOption = $(this).val();
 	 var firstOption = $('#week option:first').val();
 	 disable1stOption(firstOption,selectedOption)
-
+	 //console.log(selectedOption);
+	 //console.log(firstOption);
 	 
     loadData(selectedOption);
 });
@@ -1185,8 +1190,7 @@ function addNewJob() {
                 // Handle the success response from the server
                 if (response.status === 'success') {
                     // Reload the page on success
-                        var selectedOption = $('#week').val();
-                        loadData(selectedOption);
+                    location.reload();
                 } else {
                     // Display the error message in the error div
                     document.getElementById("errormsgs").innerHTML = '<h3 style="color: red;">Error adding new job: ' + response.message + '</h3>';
