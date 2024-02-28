@@ -1,15 +1,27 @@
-<?php include 'common.php'; ?>
+
+<?php 
+session_start();
+
+if($_SESSION['Loggedinas']){
+	
+}
+else{
+	 header("Location:index.html");
+}
+include 'common.php'; 
+
+?>
+<style>
+.cbiweb {
+	width:100%;
+	height:900px;
+}
+#page-top {
+    background-color: #F40303 !important;
+}
+</style>
             <!-- Section with applicants and courses containers --> 
-	<form method="post" id="myForm" action="processorder.php">
-	<br><br>
-	<div class="signup-container"> 
-            <!-- Box container containing elements -->
-            <div class="form-cube"> 
-                <h1 id="heading">Scan/Enter the Part Number</h1>
-		<div class="input-field" id="idFld"> 
-        <input type="text" id="barcodeInput" name="barcode" autofocus>
-                        </div>
-</form>
+<iframe src="https://www.cbi-electric.com.au/" class="cbiweb"></iframe>
 <?php include 'loading.php'; ?>
         </div>
     </body>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- Viewport set to scale 1.0 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBi &#8211; Sign In</title>
+    <!-- References to external basic CSS file -->
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <!-- Favicon for tab -->
+    <link rel="icon" type="image/x-icon" href="images/game-fill.png">
+    <!-- References to web icons from Remixicon.com -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- References to external fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<style>
+    body {
+        background: url(images/loginbg.jpg);
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        /* This keeps the background fixed when scrolling */
+        margin: 0;
+        /* Remove default margin for body */
+        padding: 0;
+        /* Remove default padding for body */
+        height: 100vh;
+        /* Set the body height to 100% of the viewport height */
+    }
+
+    .input-field1 {
+        /*background: #eaeaea;*/
+        border: solid 1px #6D435A;
+        margin: 2px 0 17px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+    }
+
+    button#fill1 {
+        font: 400 1rem 'Jost', sans-serif;
+        color: black;
+        background-color: #9999ff;
+        text-decoration: none;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        padding: 8px 20px;
+    }
+
+    #loading-animation {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(242, 242, 242, 0.5);
+        z-index: 9999;
+    }
+
+    #loading-animation img {
+        width: 60%;
+        height: 60%;
+        margin-left: 10%;
+    }
+
+    #page-content {
+        transition: ease-in 2s;
+        margin-left: 10%;
+    }
+
+    #errormsg {
+        font-weight: bold;
+        color: red;
+        margin-left: 20%;
+    }
+	#rememberMe{
+		
+		//margin-top:-2%;
+	}
+	#remember {
+    display: flex;
+    //align-items: center;
+}
+#remember input {
+  margin-right:2%;
+  height:18px;
+  width:18px;
+}
+</style>
+<body>
+<div id="loading-animation">
+    <img src="images/loading.gif" alt="Loading..." class="spinner">
+</div>
+
+<div id="page-content" style="display: none;">
+    <!-- Box container containing elements -->
+    <br><br><br><br><br><br><br><br><br><br>
+
+    <form method="post" action="verify.php">
+
+        <div class="input-container" style="width:15%;margin-left:40%; margin-top:10%;">
+            <div id="errormsg"></div>
+            <!-- Field for user ID starts -->
+            <div class="input-field1">
+                <i class="ri-user-fill"></i>
+                <!-- HTML validation --> <!--required="required" -->
+                <input type="text" name="username" id="username" maxlength="15" placeholder="Username">
+            </div>
+            <!-- Field for password starts -->
+            <div class="input-field1">
+                <i class="ri-lock-fill"></i>
+                <!-- HTML validation -->
+                <input type="password" name="password" id="password" maxlength="10" placeholder="Password" autofocus>
+            </div>
+            <!-- "Remember Me" checkbox -->
+			<div id="remember">
+			
+            <input type="checkbox" id="rememberMe" name="rememberMe" checked>
+			<label for="rememberMe">Remember Me</label>
+			</div><br>
+            
+            <!-- Links for password retrieval, applicant login, and registration -->
+            <div id="fgtpwd"><a onclick="forgotpwd()">Forgot/Change Password?</a></div><br>
+            <div id="float-right">
+                <!-- Form button that submits input to backend -->
+                <button id="fill1" class="signinBttn" type="submit" value="submit">Sign In</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Check if the "Remember Me" checkbox is selected
+    const rememberMeCheckbox = document.getElementById("rememberMe");
+    if (rememberMeCheckbox) {
+        const storedUsername = getCookie("rememberedUsername");
+
+        if (storedUsername) {
+            // Auto-fill the username field with the stored username
+            document.getElementById("username").value = storedUsername;
+        }
+    }
+
+    setTimeout(function () {
+        document.getElementById("loading-animation").style.display = "none";
+        document.getElementById("page-content").style.display = "block";
+    }, 3000);
+
+    // Add an event listener to the Sign In button
+    document.querySelector(".signinBttn").addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent the form submission
+
+        // Get the username and password from the input fields
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        // Check if the "Remember Me" checkbox is selected
+        if (rememberMeCheckbox.checked) {
+            // Store the username in a cookie that expires in 30 days
+            setCookie("rememberedUsername", username, 30);
+        } else {
+            // Clear the stored username cookie
+            deleteCookie("rememberedUsername");
+        }
+
+        // Create a new XMLHttpRequest object
+        const xhr = new XMLHttpRequest();
+
+        // Define the request method, URL, and whether it should be asynchronous
+        xhr.open("POST", "verify.php", true);
+
+        // Set the request header for POST data
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        // Define the callback function to handle the response
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Parse the JSON response
+                const response = JSON.parse(xhr.responseText);
+
+                if (response.status === 'success') {
+                    switch (response.accesslevel) {
+                        case 1:
+                            window.location.href = "Dashboard.php";
+                            break;
+                        case 2:
+                            window.location.href = "prodschedule2.php";
+                            break;
+                        case 3:
+                            window.location.href = "prodschedule-tester.php";
+                            break;
+                        case 4:
+                            window.location.href = "Dashboard4.php";
+                            break;
+                        default:
+                            // Handle other access levels or unknown cases
+                            break;
+                    }
+                } else {
+                    // Handle the error case or display an error message
+                    // For example:
+                    document.getElementById("errormsg").innerText = response.message;
+                }
+            }
+        };
+
+        // Send the POST request with username and password as parameters
+        xhr.send("username=" + username + "&password=" + password);
+    });
+});
+
+function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + "; " + expires;
+}
+
+function getCookie(name) {
+    const cookieName = name + "=";
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.indexOf(cookieName) === 0) {
+            return cookie.substring(cookieName.length, cookie.length);
+        }
+    }
+    return null;
+}
+
+function forgotpwd() {
+    // Get the username from the input field
+    var username = document.getElementById("username").value;
+
+    if (username.trim() === "") {
+        // Display an error message if the username is empty
+        var errormsg = document.getElementById("errormsg");
+        errormsg.style.color = "red";
+        errormsg.style.marginLeft = "0"; // Set margin-left to 0
+        errormsg.textContent = "Please enter a username before clicking on the reset link.";
+        return;
+    }
+
+    // Create a new XMLHttpRequest object
+    var xhr = new XMLHttpRequest();
+
+    // Define the URL of the PHP script
+    var url = "forgotpwd.php";
+
+    // Specify the HTTP method (POST) and the URL
+    xhr.open("POST", url, true);
+
+    // Set the request header
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    // Define a callback function to handle the response
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                // Parse the JSON response
+                var response = JSON.parse(xhr.responseText);
+
+                if (response.status === "success") {
+                    // Display a success message in black color in the "errormsg" div
+                    var errormsg = document.getElementById("errormsg");
+                    errormsg.style.color = "green";
+                    errormsg.style.marginLeft = "0%"; // Restore the margin-left if needed
+                    errormsg.textContent = response.message;
+                } else {
+                    // Handle other response scenarios, if needed
+                    alert(response.message); // Display other responses as alerts
+                }
+            } else {
+                // Handle non-200 HTTP status codes, if needed
+                alert("Error: " + xhr.status);
+            }
+        }
+    };
+
+    // Send the username to the PHP script
+    xhr.send("username=" + username);
+}
+
+function deleteCookie(name) {
+  setCookie(name, "", -1);
+}
+
+</script>

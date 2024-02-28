@@ -116,39 +116,15 @@
         <i class="ri-menu-line"></i>
       </label>
       <ul>
-        <li><a href="Dashboard.php" id="select">
-            <p>Home</p>
-          </a></li>
-        <li><a href="Stock.php" id="select">
-            <p>Stock</p>
-          </a></li>
-        <li><a href="prodschedule.php" id="select">
+        <li><a href="prodschedule-tester.php" id="select">
             <p>Production Schedule</p>
           </a></li>
-		  <li><a href="workorders.php" id="select">
+		  <li><a href="workorders3.php" id="select">
             <p>Work Orders</p>
           </a></li>
-		  <li><a href="workordershistory.php" id="select">
+		  <li><a href="workordershistory3.php" id="select">
             <p>Work Orders History</p>
-          </a></li>
-        <li><a href="Viewusers1.php" id="select">
-            <p>View Users</p>
-          </a></li>
-        <li><a href="manageusers1.php" id="select">
-            <p>Manage Users</p>
-          </a></li>
-        <li><a href="updatestock1.php" id="select">
-            <p>Update Stock Data</p>
-          </a></li>
-		<li><a href="usage.php" id="select">
-            <p>Usage</p>
-          </a></li>
-	<li><a href="reorder.php" id="select">
-            <p>Re-Order</p>
-          </a></li>
-		<li><a href="orderhistory.php" id="select">
-            <p>Order History</p>
-          </a></li>		
+          </a></li>	
 		  <li><a href="logout.php" id="select">
             <p>Logout</p>
           </a></li>

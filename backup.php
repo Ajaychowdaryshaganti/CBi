@@ -1,73 +1,112 @@
 <?php
-// Define the database credentials
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "cbi";
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-// Define the root backup directory
-$backupRootDirectory = '/opt/lampp/htdocs/CBi/Backup';
+// Database connection parameters
+include "connection.php";
 
-// Generate the subdirectory name with today's timestamp
-$todayDirectory = date('Ymd');
+// Backup directory
+$backupDirectory = '/var/www/html/Backup/';
 
-// Define the output directory with the subdirectory path
-$outputDirectory = $backupRootDirectory . '/' . $todayDirectory;
-
-// Append a number to the directory name if it already exists
-$counter = 1;
-$uniqueDirectory = $outputDirectory;
-while (is_dir($uniqueDirectory)) {
-    $uniqueDirectory = $outputDirectory . '_' . $counter;
-    $counter++;
+// Ensure the backup directory exists
+if (!is_dir($backupDirectory)) {
+    mkdir($backupDirectory, 0755, true);
 }
 
-// Ensure the output directory exists
-if (!is_dir($uniqueDirectory)) {
-    // Create the output directory if it doesn't exist
-    mkdir($uniqueDirectory, 0777, true);
+// Path to mysqldump executable
+$mysqldumpPath = '/usr/bin/mysqldump'; // Change this path according to your environment
 
-    // Set the permissions for the directory and its contents
-    chmod($uniqueDirectory, 0777);
-}
+// Output file name with timestamp
+$timestamp = date('Ymd_His');
+$timestamp1 = date('d/m/y - H:i:s');
+$backupFilename = "{$backupDirectory}CBi_Database_Backup_{$timestamp}.sql";
 
-try {
-    // Establish a database connection
-    $connection = new mysqli($servername, $username, $password, $database);
+// Construct the mysqldump command
+$command = "{$mysqldumpPath} -u {$username} -p{$password} -h {$servername} {$database} > {$backupFilename}";
 
-    // Check the connection
-    if ($connection->connect_error) {
-        throw new Exception("Connection failed: " . $connection->connect_error);
+// Execute the command
+$output = array();
+exec($command, $output, $returnValue);
+
+// Check for success
+if ($returnValue === 0) {
+    echo 'Database backup successful.';
+
+    // Load Composer's autoloader for PHPMailer
+    require 'vendor/autoload.php';
+
+    // Create a new PHPMailer instance
+    $mail = new PHPMailer(true);
+
+    // Set the SMTP server details
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.office365.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'stockmanagement@cbi-electric.com.au'; // Your Office 365 email address
+    $mail->Password   = 'BNWijFm3wY1qPZvy'; // Your Office 365 password
+    $mail->SMTPSecure = 'tls';
+    $mail->Port       = 587;
+
+    // Sender email address
+    $mail->setFrom('stockmanagement@cbi-electric.com.au', 'Stock Management');
+
+    // Array of recipient email addresses
+    $recipients = array(
+        'stockmanagement@cbi-electric.com.au' => 'Stock Management System 1',
+        'sabeysinghe@cbi-electric.com.au' => 'Suminda',
+        // Add more recipients as needed
+    );
+
+    // Loop through recipients and add them to the email
+    foreach ($recipients as $email => $name) {
+        $mail->addAddress($email, $name);
     }
 
-    // Get the list of tables in the database
-    $tablesQuery = "SHOW TABLES";
-    $tablesResult = $connection->query($tablesQuery);
-echo "\n ---------------------------------------------------------------------------------------------------------------------------------------------\n";
-		echo "\nLogs for: $todayDirectory\n";
-    // Loop through each table
-    while ($tableRow = $tablesResult->fetch_row()) {
-        $tableName = $tableRow[0];
+    $mail->addBCC('cbielectricsms@gmail.com','Stock Management System',);
+    // Email subject and body
+    $mail->Subject = 'Database Backup for ' .$timestamp1;
+    $mail->Body    = 'Please find attached the database backup file.';
 
-        // Generate a unique filename for the CSV file with timestamp
-        $filename = $uniqueDirectory . '/' . $tableName . '.csv';
+    // Attach the backup file
+    $mail->addAttachment($backupFilename);
 
-        // Execute the SELECT ... INTO OUTFILE statement to export the table data
-        $exportQuery = "SELECT * INTO OUTFILE '$filename' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' FROM $tableName";
-        $exportResult = $connection->query($exportQuery);
-
-        // Check if the export query executed successfully
-        if (!$exportResult) {
-            throw new Exception("Error exporting table: $tableName");
-        }
-        
-        echo "Table exported successfully: $tableName\n";
+    // Send the email
+    try {
+        $mail->send();
+        echo ' Email sent successfully.';
+    } catch (Exception $e) {
+        echo ' Email could not be sent. Error: ', $mail->ErrorInfo;
     }
+} else {
+    echo 'Error creating database backup. Error: ' . implode("\n", $output);
 
-    // Close the database connection
-    $connection->close();
-} catch (Exception $e) {
-    echo "An error occurred: " . $e->getMessage();
-    exit;
+    // Send an error email
+    $mail = new PHPMailer(true);
+
+    // Set the SMTP server details for error email
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.office365.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'stockmanagement@cbi-electric.com.au'; // Your Office 365 email address
+    $mail->Password   = 'BNWijFm3wY1qPZvy'; // Your Office 365 password
+    $mail->SMTPSecure = 'tls';
+    $mail->Port       = 587;
+
+    // Sender email address for error email
+    $mail->setFrom('stockmanagement@cbi-electric.com.au', 'Stock Management');
+
+    // Recipient email address for error email
+    $mail->addAddress('stockmanagement@cbi-electric.com.au', 'Stock Management System');
+
+    // Email subject and body for error email
+    $mail->Subject = 'Database Backup Error';
+    $mail->Body    = 'Error creating database backup. Check logs for more details.';
+    
+    try {
+        $mail->send();
+        echo ' Error email sent successfully.';
+    } catch (Exception $e) {
+        echo ' Error email could not be sent. Error: ', $mail->ErrorInfo;
+    }
 }
 ?>

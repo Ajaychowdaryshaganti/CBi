@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $BinLocation = $row['BinLocation'];
             $PartName = $row['PartName'];
             $PartNo = $row['PartNo'];
+			$supplier=$row['supplier'];
             $Max = $row['Max'];
             $Min = $row['Min'];
             $flag = 1;

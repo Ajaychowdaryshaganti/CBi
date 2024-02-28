@@ -1,171 +1,364 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CBI | Production Schedule</title>
-    <!-- References to external basic CSS file -->
-    <link rel="stylesheet" type="text/css" href="styles/style.css">
-    <!-- Favicon for tab -->
-    <link rel="icon" type="image/x-icon" href="images/game-fill.png">
-    <!-- Reference to web icons from Remixicon.com -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-    <!-- Reference to web icons from Fontawesome -->
-    <script src="https://kit.fontawesome.com/d7376949ab.js" crossorigin="anonymous"></script>
-    <!-- References to external fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        
-    </style>
-</head>
+<?php
+include 'common.php';
+include 'connection.php';
 
-<body>
-    <div id="moveJobsPop">
-        <div id="yearContainerPop">
-            <label for="yearPop">Select Year: </label>
-            <select id="yearPop" onchange="updateWeeksPop()">
-                <!-- The years will be populated dynamically -->
-            </select>
-        </div>
-
-        <div id="monthsContainerPop">
-            <label for="monthPop">Select Month: </label>
-            <select id="monthPop" onchange="updateWeeksPop()">
-                <!-- The months will be populated dynamically -->
-                <option value="January">January</option>
-                <option value="February">February</option>
-                <option value="March">March</option>
-                <option value="April">April</option>
-                <option value="May">May</option>
-                <option value="June">June</option>
-                <option value="July">July</option>
-                <option value="August">August</option>
-                <option value="September">September</option>
-                <option value="October">October</option>
-                <option value="November">November</option>
-                <option value="December">December</option>
-            </select>
-        </div>
-
-        <div id="weekContainerPop">
-            <label for="weekPop">Select Week:</label>
-            <select id="weekPop">
-                <!-- Week options will be added dynamically -->
-            </select>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    // Define the months array here
-    const months = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-
-    function populateYearsPop() {
-        const yearDropdown = document.getElementById("yearPop");
-        const yearsToShow = 15; // Total years to display, 10 previous years and 5 forward years
-        const currentYearPop = new Date().getFullYear();
-
-        for (let i = currentYearPop - 10; i <= currentYearPop + 4; i++) {
-            const option = document.createElement("option");
-            option.value = i;
-            option.text = i;
-            yearDropdown.appendChild(option);
-        }
-
-        yearDropdown.value = currentYearPop; // Set current year as the default selected
-    }
-
-    function updateWeeksPop() {
-        const yearDropdown = document.getElementById("yearPop");
-        const monthDropdown = document.getElementById("monthPop");
-        const weekDropdown = document.getElementById("weekPop");
-
-        const selectedYearPop = parseInt(yearDropdown.value, 10);
-        const selectedMonthPop = monthDropdown.value;
-        const monthIndexPop = months.indexOf(selectedMonthPop);
-		const selectedWeek = weekDropdown.value;
-		console.log('test:'+selectedWeek);
-
-        // Clear the existing options and populate the week dropdown
-        weekDropdown.innerHTML = "";
-
-        // Calculate the number of days in the selected month
-        const daysInMonthPop = new Date(selectedYearPop, monthIndexPop + 1, 0).getDate();
-
-        // Calculate the number of weeks
-        let weekNumber = 1;
-        let startDay = 1; // Default start day for the first week
-        let endDay = 0; // Default end day for the first week
-
-        for (let day = 1; day <= daysInMonthPop; day++) {
-            const currentDate = new Date(selectedYearPop, monthIndexPop, day);
-            const currentDay = currentDate.getDay(); // 0 for Sunday, 1 for Monday, ...
-
-            if (currentDay === 1) {
-                // Monday, start of a new week
-                startDay = day;
-            } else if (currentDay === 0 || day === daysInMonthPop) {
-                // Sunday or end of the month, end of the week
-                endDay = day;
-
-                // Create the week option if it has at least one weekday
-                if (endDay > startDay) {
-                    const startOfWeekPop = new Date(selectedYearPop, monthIndexPop, startDay);
-                    const endOfWeekPop = new Date(selectedYearPop, monthIndexPop, endDay);
-
-                    const formattedWeekPop = `Week ${weekNumber} (${formatDatePop(startOfWeekPop)} to ${formatDatePop(endOfWeekPop)})`;
-                    const weekOptionPop = document.createElement("option");
-                    weekOptionPop.value = `${formatDatePop(startOfWeekPop)},${formatDatePop(endOfWeekPop)}`;
-                    weekOptionPop.textContent = formattedWeekPop;
-                    weekDropdown.appendChild(weekOptionPop);
-
-                    // Update for the next week
-                    weekNumber++;
-                }
-            }
-        }
-
-        // Call the function to load data based on the selected week
-        loadDataPop(weekDropdown.value);
-    }
-
-    function formatDatePop(date) {
-        const yearPop = date.getFullYear();
-        const monthPop = String(date.getMonth() + 1).padStart(2, "0");
-        const dayPop = String(date.getDate()).padStart(2, "0");
-        return `${dayPop}-${monthPop}-${yearPop}`;
-    }
-
-    function loadDataPop(selectedWeek) {
-        // Replace this with your code to load data based on the selected week
-        console.log("Data loaded for week: " + selectedWeek);
-    }
-
-function initPop() {
-    const currentMonthIndexPop = new Date().getMonth();
-    const currentYearPop = new Date().getFullYear();
-
-    // Initial population of the year dropdown
-    populateYearsPop();
-
-    // Set the default selected month to the current month
-    const monthDropdown = document.getElementById("monthPop");
-    monthDropdown.value = months[currentMonthIndexPop];
-
-    // Update weeks based on the selected month
-    updateWeeksPop();
+// Fetch sales order numbers from the database
+$query = "SELECT DISTINCT jobid FROM transactions";
+$result = mysqli_query($conn, $query);
+$salesOrderOptions = '';
+while ($row = mysqli_fetch_assoc($result)) {
+  $salesOrderNo = $row['jobid'];
+  $salesOrderOptions .= "<option value='$salesOrderNo'>$salesOrderNo</option>";
 }
 
-    // Call the initialization function
-    initPop();
-</script>
+// Fetch part numbers from the database
+$query = "SELECT DISTINCT partno FROM transactions";
+$result = mysqli_query($conn, $query);
+$partNoOptions = '';
+while ($row = mysqli_fetch_assoc($result)) {
+  $partNo = $row['partno'];
+  $partNoOptions .= "<option value='$partNo'>$partNo</option>";
+}
+
+// Fetch categories from the database
+$query = "SELECT DISTINCT category FROM transactions";
+$result = mysqli_query($conn, $query);
+$categoryOptions = '';
+while ($row = mysqli_fetch_assoc($result)) {
+  $category = $row['category'];
+  $categoryOptions .= "<option value='$category'>$category</option>";
+}
 
 
+?>
 
+<html>
+<head>
+  <title>Usage Table</title>
+  <style>
+    /* CSS styles for the table and filters */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      text-align: center;
+      border: 1px solid black;
+      padding: 8px;
+    }
+
+    th {
+      background-color: #ff8a8a;
+      height: 50px;
+    }
+
+    #filters {
+      margin-bottom: 10px;
+    }
+
+    #filters label,
+    #filters select,
+    #filters input {
+      margin: 5px;
+    }
+
+    #print-button {
+      margin-bottom: 10px;
+    }
+	table {
+		width:73%;
+		margin-left:25%;
+		margin-bottom:2%;
+		padding-top:5%;	
+	}
+
+	#mainh1 {
+		margin-top:-30%;
+		margin-left:58%;
+	
+	}
+
+	#fill-green {	
+		margin-left:58%;
+	}
+	thead th {
+  position: sticky;
+  top: -1.7rem;
+  z-index:10;
+
+}
+
+#up {
+	
+	margin-left: 97%;
+position: sticky;
+          bottom:0;
+
+}
+#down {
+	margin-left: 97%;
+	margin-bottom: 50%;
+	z-index:1;
+position: sticky;
+          top:0;
+}
+#total_cost{
+	
+	margin-left:25%;
+	font-size:20px;
+	font-weight:bold;
+	}
+	
+.printscrn{
+	
+	margin-left:75%;
+	margin-top:-2%;
+}
+#apply-filters-button{
+	
+font: 400 1rem 'Jost', sans-serif;
+    color: #ffeef0;
+    background-color: #FF6978;
+    text-decoration: none;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 8px 20px;
+}
+  #loading-spinner {
+    display: none;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+ 
+
+    @media print {
+      table tr {
+        background-color: #ff8a8a !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="filters">
+    <label for="sales_order">Sales Order No:</label>
+<input type="text" id="sales_order" list="salesOrderList" style="background: #eaeaea; border: solid 1px #6D435A; margin: 2px 0 17px; border-radius: 3px; display: flex; align-items: center;">
+<datalist id="salesOrderList">
+  <option value="">All</option>
+  <?php echo $salesOrderOptions; ?>
+</datalist>
+
+    <label for="part_no">Part No:</label>
+    <select id="part_no">
+      <option value="">All</option>
+      <?php echo $partNoOptions; ?>
+    </select>
+
+    <label for="category">Category:</label>
+    <select id="category">
+      <option value="">All</option>
+      <?php echo $categoryOptions; ?>
+    </select>
+
+
+    <label for="date_range">Date Range:</label>
+    <input type="date" id="start_date" placeholder="Start Date">
+    <input type="date" id="end_date" placeholder="End Date">
+
+<button id="apply-filters-button" onclick="applyFilters()">Apply</button>
+
+    <button id="fill" onclick="clearFilters()">Reset</button>
+	<button id="fill-blue" ><a href="detailedusage.php" style="text-decoration:none;">Detailed Usage</a></button>
+  </div>
+
+  <h1 id="mainh1">Usage</h1>
+<div id="total_cost"></div><div class="printscrn"><button id="fill-green" onclick="printTable()" >Print Table</button></div>
+  <table id="jobs_table">
+    <tr>
+      <th>Sales Order No</th>
+      <th>Part No</th>
+      <th>Description</th>
+      <th>Category</th>
+	  <th>Quantity Used</th>
+	  <th>Cost</th>
+      <th>Date</th>
+    </tr>
+	<div id="loading-spinner"></div>
+    <?php
+    $query = "SELECT *
+FROM (
+    SELECT jobid, partno, partname, category, SUM(CASE WHEN type = 'used' THEN quantity ELSE -quantity END) AS quantity,round(quantity*PricePerUnit,2) as Cost, scandate
+    FROM transactions
+    GROUP BY jobid, partno, category
+    ORDER BY scandate DESC
+) AS subquery
+WHERE quantity > 0;";
+    $result = mysqli_query($conn, $query);
+		echo"<a id=\"top\"><a id=\"down\" href=\"#bottom\"><i style='font-size:24px; color:#A9A9A9' class='fas'>&#xf13a;</i></a>";
+    while ($row = mysqli_fetch_assoc($result)) {
+      $salesOrderNo = $row['jobid'];
+      $partNo = $row['partno'];
+      $partName = $row['partname'];
+      $category = $row['category'];
+      $cost = $row['Cost'];
+	 $formattedTimestamp = date_format(date_create($row['scandate']), 'd/m/y H:i');
+	  $used=$row['quantity'];
+
+      $rowColor = 'white';
+
+      echo "<tr style='background-color: $rowColor;'>
+              <td>$salesOrderNo</td>
+              <td>$partNo</td>
+              <td>$partName</td>
+              <td>$category</td>
+              <td>$used</td>
+              <td>$cost</td>
+              <td>$formattedTimestamp</td>
+            </tr>";
+    }
+	include 'loading.php';
+	echo "</table><a id=\"bottom\"></a>
+<a id=\"up\" href=\"#top\"><i style='font-size:24px;color:#A9A9A9' class='fas'>&#xf139;</i></a>";
+    ?>
+  
+
+  <script>
+      window.onload = function() {
+        applyFilters(); // Apply the initial filter
+    };
+var totalCost = 0; // Declare the total cost as a global variable
+
+function applyFilters() {
+  var salesOrder = document.getElementById("sales_order").value;
+  var partNo = document.getElementById("part_no").value;
+  var category = document.getElementById("category").value;
+  var startDate = document.getElementById("start_date").value;
+  var endDate = document.getElementById("end_date").value;
+
+  var table = document.getElementById("jobs_table");
+  var rows = table.getElementsByTagName("tr");
+  var applyFiltersButton = document.getElementById("apply-filters-button");
+  var loadingSpinner = document.getElementById("loading-spinner");
+
+  // Show the loading spinner and hide the Apply Filters button during the loading process
+  applyFiltersButton.style.display = "none";
+  loadingSpinner.style.display = "inline-block";
+
+  totalCost = 0; // Reset the total cost
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = rows[i];
+    var salesOrderCell = row.cells[0];
+    var partNoCell = row.cells[1];
+    var categoryCell = row.cells[3];
+    var dateCell = row.cells[6];
+    var costCell = row.cells[5]; // Assuming the cost column is the 6th column (index 5)
+
+    var salesOrderMatch = salesOrder === "" || salesOrderCell.innerText === salesOrder;
+    var partNoMatch = partNo === "" || partNoCell.innerText === partNo;
+    var categoryMatch = category === "" || categoryCell.innerText === category;
+
+    // Format the date for comparison
+    var dateString = dateCell.innerText;
+    var dateParts = dateString.split('/');
+    var day = parseInt(dateParts[0], 10);
+    var month = parseInt(dateParts[1], 10) - 1;
+    var year = parseInt(dateParts[2], 10) + 2000;
+    var rowDate = new Date(year, month, day);
+
+    var year = rowDate.getFullYear();
+    var month = String(rowDate.getMonth() + 1).padStart(2, '0');
+    var day = String(rowDate.getDate()).padStart(2, '0');
+    var formattedDate = `${year}-${month}-${day}`;
+
+    var dateMatch = (startDate === "" || startDate <= formattedDate) &&
+                    (endDate === "" || endDate >= formattedDate);
+
+    if (salesOrderMatch && partNoMatch && categoryMatch && dateMatch) {
+      row.style.display = "";
+      var cost = parseFloat(costCell.innerText); // Convert the cost value to a floating-point number
+      totalCost += cost; // Add the cost to the total cost
+    } else {
+      row.style.display = "none";
+    }
+	  applyFiltersButton.style.display = "inline-block";
+  loadingSpinner.style.display = "none";
+  }
+
+  // Display the total cost in a separate element
+  var totalCostElement = document.getElementById("total_cost");
+  totalCostElement.innerText = "Total Cost: $" + totalCost.toFixed(2); // Format the total cost with 2 decimal places
+}
+
+// Rest of the code...
+
+
+function clearFilters() {
+  document.getElementById("sales_order").value = "";
+  document.getElementById("part_no").value = "";
+  document.getElementById("category").value = "";
+  document.getElementById("start_date").value = "";
+  document.getElementById("end_date").value = "";
+
+  applyFilters();
+}
+
+function printTable() {
+  var table = document.getElementById("jobs_table");
+  var rows = table.getElementsByTagName("tr");
+
+  // Create a new window and open it
+  var printWindow = window.open("", "_blank");
+
+  // Write the opening tags and styles to the new window
+  printWindow.document.open();
+  printWindow.document.write("<html><head><title>Print</title>");
+  printWindow.document.write("<style>");
+  printWindow.document.write("table { border-collapse: collapse; width: 100%; }");
+  printWindow.document.write("th, td { text-align: center; border: 1px solid black; padding: 8px; }");
+  printWindow.document.write("th { background-color: #ff8a8a; height: 50px; }");
+  printWindow.document.write("</style>");
+  printWindow.document.write("</head><body>");
+
+  // Add the total cost to the div element
+  var totalCostDiv = document.createElement("div");
+  totalCostDiv.id = "total_cost";
+  totalCostDiv.textContent = "Total Cost: $" + totalCost.toFixed(2); // Display total cost with two decimal places
+  printWindow.document.body.appendChild(totalCostDiv);
+
+  // Create a new table and copy the content with styles from the original table
+  var printTable = document.createElement("table");
+  printTable.innerHTML = table.innerHTML;
+
+  // Apply the row background colors to the new table
+  for (var i = 1; i < rows.length; i++) {
+    var row = printTable.rows[i];
+    var rowColor = window.getComputedStyle(rows[i]).backgroundColor;
+    row.style.backgroundColor = rowColor;
+  }
+
+  // Append the new table to the new window
+  printWindow.document.body.appendChild(printTable);
+
+  // Write the closing tags to the new window
+  printWindow.document.write("</body></html>");
+  printWindow.document.close();
+
+  // Print the new window
+  printWindow.print();
+}
+
+
+  </script>
 </body>
 </html>

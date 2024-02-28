@@ -1,12 +1,20 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "";
-$database = "cbi";
+$password = "CBi@1234";
+$database = "CBi";
 
 // Create a connection
 $conn = new mysqli($servername, $username, $password, $database);
 
+// Set the SQL mode to an empty string
+$sql = "SET sql_mode = ''";
+$result = $conn->query($sql);
+
+// Check for query execution errors
+if (!$result) {
+    die("Error setting SQL mode: " . $connection->error);
+}
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
