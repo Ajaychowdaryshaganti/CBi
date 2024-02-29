@@ -228,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "</tbody>
             </table></center><br><br><strong><a href=\"validateuser.php?password=" . urlencode($password) . "\" style=\"margin-left:46.5%;\"> &#x1F50D Scan New Item</a><strong>
             <br><br>
-            <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userlogin.html\">Logout</a></center>
+            <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userloginwo.html\">Logout</a></center>
             </div>
         </div>
     </form>";

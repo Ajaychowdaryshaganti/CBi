@@ -6,12 +6,26 @@ $password=$_SESSION['password'];
 
 $msg = '';
 $flag = 0;
+$quant = 0;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $partno = $_POST['barcode'];
     $jobid = $_POST['jobid'];
     $_SESSION['jobid'] = $jobid;
     $query = "SELECT * FROM tophathymod WHERE PartNo = '$partno'";
-    $result = mysqli_query($conn, $query);
+    $query1 = "SELECT jobid, CONCAT(
+                BinLocation,
+                CASE
+                  WHEN RIGHT(BinLocation, 2) REGEXP '^[0-9]+0$' THEN ''
+                     ELSE ''
+                END
+              ) AS BinLocation, partno, partname,fittername, category, SUM(CASE WHEN type = 'used' THEN quantity ELSE -quantity END) AS quantity, scandate
+    FROM transactions
+    where jobid='$jobid' and PartNo = '$partno'
+    GROUP BY category ORDER BY CAST(REGEXP_REPLACE(BinLocation, '[^0-9]', '') AS UNSIGNED),
+                       LENGTH(BinLocation),
+                       BinLocation;";
+    $result = mysqli_query($conn, $query); // Fixed variable name
+    $result1 = mysqli_query($conn, $query1); // Fixed variable
 
     if ($result) {
         if (mysqli_num_rows($result) > 0) {
@@ -36,9 +50,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $flag = 0;
         }
     } else {
-        $msg = 'Query failed: ' . mysqli_error($conn);
+        $msg = 'Query1 failed: ' . mysqli_error($conn);
         $flag = 0;
     }
+
+    if ($result1) { // Fixed variable name
+        if (mysqli_num_rows($result1) > 0) {
+            $row1 = mysqli_fetch_assoc($result1); // Fixed variable name
+            $quant = $row1['quantity'];
+            $flag1 = 1;
+        } else {
+            $msg = 'Please enter a valid PartNo';
+            $flag1 = 0;
+        }
+    } else {
+        $msg = 'Query2 failed: ' . mysqli_error($conn);
+        $flag1 = 0;
+    } 
 }
 ?>
 
@@ -240,6 +268,8 @@ if ($flag) {
                 <h5><strong>Sales Order No: </strong> " . $jobid . "</h5><br>
                 <h5><strong>Allowed Limit: </strong> " . $Limit . "</h5><br>
                 <h5><strong>Category: </strong> " . $Category . "</h5><br>
+				<h4 ><strong>Quantity used: </strong> " . $quant . "</h4>
+				<h6>(For this job)</h6><br>										 
                 <h6>**Scan and enter multiple times if you're using more than allowed limit**</h6>
                 <h3 id=\"heading\">Enter the quantity used/restored</h3>
                 <div class=\"input-field\" id=\"idFld\">
@@ -247,14 +277,18 @@ if ($flag) {
                 </div>
                 <button id=\"fill\" class=\"used\" type=\"button\" onclick=\"submitForm('userused.php')\">Used</button><br><br>
                 <button id=\"fill-green\" class=\"restored\" type=\"button\" onclick=\"submitForm('userrestored.php')\">Restored</button>
-				<br><br><strong><a href=\"validateuser.php?password=" . urlencode($password) . "\" style=\"margin-left:0%;\"> &#x1F50D Scan New Item</a><strong><br><br><center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userlogin.html\">Logout</a></center>
+				<br><br><strong><a href=\"validateuser.php?password=" . urlencode($password) . "\" style=\"margin-left:0%;\"> &#x1F50D Scan New Item</a><strong><br><br><center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userloginwo.html\">Logout</a></center>
             </div>
               
         </div>
     </form>
     ";
 } else {
-    $query = "SELECT jobid, projectmanager, type FROM jobs WHERE allocatedfitter='$fittername' AND currentstate='InProgress'";
+    $query = "SELECT jobid, type
+FROM workorders
+WHERE  currentstate='InProgress'
+AND (fitter1='$fittername' OR fitter2='$fittername' OR fitter3='$fittername')
+";
     $result = mysqli_query($conn, $query);
     $options = '';
     while ($row = mysqli_fetch_assoc($result)) {
@@ -278,7 +312,7 @@ if ($flag) {
                     <input type=\"text\" id=\"barcodeInput\" name=\"barcode\" autofocus>
                 </div>
             
-            <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userlogin.html\">Logout</a></center>      </div>
+            <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userloginwo.html\">Logout</a></center>      </div>
         </div>
     </form>
     ";

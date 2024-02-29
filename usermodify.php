@@ -12,7 +12,7 @@ try {
 
 
         // Prepare the SQL statement with placeholders
-        $updateQuery = "UPDATE jobs SET currentstate = ?, lastupdated = ? WHERE jobid = ?";
+        $updateQuery = "UPDATE workorders SET currentstate = ?, lastupdated = ? WHERE jobid = ?";
         $statement = mysqli_prepare($conn, $updateQuery);
 
         if ($statement) {

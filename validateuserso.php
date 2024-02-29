@@ -156,7 +156,7 @@ $_SESSION['password']=$userpin;
             color: #007bff;
             text-decoration: none;
         }
-				#fill-orange{
+		#fill-orange{
 			    font: 400 1rem 'Jost', sans-serif;
 				color: white;
 				background-color: #FF7F50;
@@ -241,8 +241,8 @@ $_SESSION['password']=$userpin;
 
 <?php
 if ($flag) {
-    $query = "SELECT jobid, type
-FROM workorders
+    $query = "SELECT jobid, projectmanager, type
+FROM jobsnew
 WHERE  currentstate='InProgress'
 AND (fitter1='$fittername' OR fitter2='$fittername' OR fitter3='$fittername')
 ";
@@ -261,7 +261,7 @@ AND (fitter1='$fittername' OR fitter2='$fittername' OR fitter3='$fittername')
     $inputDisabled = ($options === "<option value=\"\">No jobs assigned</option>") ? 'disabled' : '';
 
     echo "
-    <form method=\"post\" id=\"myForm\" action=\"userorder.php\">
+    <form method=\"post\" id=\"myForm\" action=\"userorderso.php\">
         <br><br>
         <div class=\"signup-container\">
             <!-- Box container containing elements -->
@@ -273,17 +273,17 @@ AND (fitter1='$fittername' OR fitter2='$fittername' OR fitter3='$fittername')
                 <div class=\"input-field " . ($inputDisabled ? 'disabled-input' : '') . "\" id=\"idFld\">
                     <input type=\"text\" id=\"barcodeInput\" name=\"barcode\" autofocus $inputDisabled>
                 </div>
-				<button id=\"fill-blue\" class=\"used\" type=\"button\" onclick=\"submitForm('userusage.php')\">Check Usage</button><p> You can check the parts used by you under this sales order</p><br><br>
+				<button id=\"fill-blue\" class=\"used\" type=\"button\" onclick=\"submitForm('userusageso.php')\">Check Usage</button><p> You can check the parts used by you under this sales order</p><br><br>
 				<button id=\"fill\" class=\"used\" type=\"button\" onclick=\"usermodify('Completed')\">Mark this job as Completed</button><p> <center>--- This process cannot be undone ---</center></p><br><br>
 				<button id=\"fill-orange\" class=\"used\" type=\"button\" onclick=\"usermodify('Paused')\">Pause this Job</button><br><br>
-                <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userloginwo.html\">Logout</a></center><br><br>
-				<button id=\"fill-green\" class=\"used\" type=\"button\" onclick=\"submitForm('useraddjob.php')\">Start a new Job</button><p> <center>--- You can only add jobs assigned to you ---</center></p>
+                <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userlogin.html\">Logout</a></center><br><br>
+				<button id=\"fill-green\" class=\"used\" type=\"button\" onclick=\"submitForm('useraddjobso.php')\">Start a new Job</button><p> <center>--- You can only add jobs assigned to you ---</center></p>
             </div>
         </div>
     </form> ";
 } else {
     echo "
-    <form method=\"get\" id=\"myForm\" action=\"validateuser.php\">
+    <form method=\"get\" id=\"myForm\" action=\"validateuserso.php\">
         <br><br>
         <div class=\"signup-container\">
             <!-- Box container containing elements --> <br>             
@@ -316,7 +316,7 @@ function usermodify(status) {
 
     // Send the data to the PHP page
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'usermodify.php', true);
+    xhr.open('POST', 'usermodifyso.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -340,6 +340,5 @@ function usermodify(status) {
     };
     xhr.send(data);
 }
-
 
 </script>

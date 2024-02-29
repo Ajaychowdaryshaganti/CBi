@@ -20,7 +20,7 @@ $Category = $_SESSION['Category'];
 $jobid = $_SESSION['jobid'];
 $ppu = $_SESSION['ppu'];
 $BinLocation = $_SESSION['BinLocation'];
-
+$password = $_SESSION['password'];
 $msg = '';
 $flag = 0;
 $msg1 = '';
@@ -70,7 +70,11 @@ if ($flag) {
 }
 
 // Fetching sales orders
-$query = "SELECT jobid, projectmanager, type FROM jobs WHERE allocatedfitter = '$fittername' AND currentstate = 'InProgress'";
+$query = "SELECT jobid, type
+FROM workorders
+WHERE  currentstate='InProgress'
+AND (fitter1='$fittername' OR fitter2='$fittername' OR fitter3='$fittername')
+";
 $result = mysqli_query($conn, $query);
 $options = '';
 while ($row = mysqli_fetch_assoc($result)) {
@@ -201,6 +205,16 @@ while ($row = mysqli_fetch_assoc($result)) {
             color: #007bff;
             text-decoration: none;
         }
+						#fill-orange{
+			    font: 400 1rem 'Jost', sans-serif;
+				color: white;
+				background-color: #FF7F50;
+				text-decoration: none;
+				border: 2px solid transparent;
+				border-radius: 8px;
+				padding: 8px 20px;
+			
+		}
 
         @media only screen and (max-width: 600px) {
             .form-cube {
@@ -309,9 +323,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <br>
                     <br></div>
 					<button id="fill-blue" class="used" type="button" onclick="submitForm('userusage.php')">Check Usage</button><br><p> You can check the parts used by you under this sales order</p><br>
-                    <button id="fill" class="used" type="button" onclick="usermodify('Completed')">Mark this job as Completed</button><p> **This process cannot be undone**</p><br><br>
-                <center><a id="" class="ri-logout-circle-line" href="userlogin.html">Logout</a></center><br><br>
-				<button id="fill-green" class="used" type="button" onclick="submitForm('useraddjob.php')">Start a new Job</button><p> **You can only add jobs assigned to you**</p>
+                    <button id="fill" class="used" type="button" onclick="usermodify('Completed')">Mark this job as Completed</button><p> <center>--- This process cannot be undone ---</center></p><br><br>
+                    <button id="fill-orange" class="used" type="button" onclick="usermodify('Paused')"> Pause this Job </button><br><br>
+                <center><a id="" class="ri-logout-circle-line" href="userloginwo.html">Logout</a></center><br><br>
+				<button id="fill-green" class="used" type="button" onclick="submitForm('useraddjob.php')">Start a new Job</button><p> <center>--- You can only add jobs assigned to you ---</center>
                 </form>
             </div>
         </div>
@@ -336,7 +351,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <button id="fill-green" class="restored" type="button" onclick="submitForm('userrestored.php')">Restored</button>
                 <br>
                     <br>
-                    <center><a id="" class="ri-logout-circle-line" href="userlogin.html">Logout</a></center>
+                    <center><a id="" class="ri-logout-circle-line" href="userloginwo.html">Logout</a></center>
                </div></div>
         </form>
             </div>        </div>
@@ -345,37 +360,39 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 </html>
 <script>
-function usermodify(status){
-	
-	const Select = document.getElementById('jobid');
+function usermodify(status) {
+    const Select = document.getElementById('jobid');
     const jobid = Select.value;
+    // Ask for confirmation before proceeding
+    const confirmMessage = `Are you sure this job: (${jobid}) is ${status}?`;
+    if (!window.confirm(confirmMessage)) {
+        return; // User canceled the action
+    }
 
     // Prepare the data to send
     const data = `jobid=${encodeURIComponent(jobid)}&status=${encodeURIComponent(status)}`;
-  console.log(status,jobid);
+
     // Send the data to the PHP page
     const xhr = new XMLHttpRequest();
     xhr.open('POST', 'usermodify.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            var response = JSON.parse(xhr.responseText);  // Parse the JSON string into an object
-            console.log(response);  // To see the full object
+            var response = JSON.parse(xhr.responseText); // Parse the JSON string into an object
+            console.log(response); // To see the full object
             if (response.message) {
-                console.log(response.message);  // Log the message property
+                console.log(response.message); // Log the message property
             } else {
                 console.log("The message property is not set.");
             }
-            if(response.success) {
-              Select.style.color="green";
-              Select.style.fontWeight = "bold";
-
-              
+            if (response.success) {
+                Select.style.color = "green";
+                Select.style.fontWeight = "bold";
             } else {
-              Select.style.color="red";
-              Select.style.fontWeight = "bold";
+                Select.style.color = "red";
+                Select.style.fontWeight = "bold";
             }
-			
+
             location.reload();
         }
     };

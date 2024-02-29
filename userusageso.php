@@ -6,54 +6,35 @@ $password = $_SESSION['password'];
 
 $msg = '';
 $flag = 0;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $jobid = $_POST['jobid'];
+    $_SESSION['jobid'] = $jobid;
+    $query = "SELECT jobid, CONCAT(
+                BinLocation,
+                CASE
+                  WHEN RIGHT(BinLocation, 2) REGEXP '^[0-9]+0$' THEN ''
+                     ELSE ''
+                END
+              ) AS BinLocation, partno, partname,fittername, category, SUM(CASE WHEN type = 'used' THEN quantity ELSE -quantity END) AS quantity, scandate
+    FROM transactions
+    where jobid='$jobid'
+    GROUP BY partno, category ORDER BY CAST(REGEXP_REPLACE(BinLocation, '[^0-9]', '') AS UNSIGNED),
+                       LENGTH(BinLocation),
+                       BinLocation;";
+    $result = mysqli_query($conn, $query);
 
-$query = "SELECT * FROM workorders WHERE  (currentstate='Assigned' OR currentstate='Paused')
-AND (fitter1='$fittername' OR fitter2='$fittername' OR fitter3='$fittername')";
-$result = mysqli_query($conn, $query);
-
-if ($result) {
-    if (mysqli_num_rows($result) > 0) {
+    if ($result) {
         $flag = 1;
     } else {
-        $msg = 'No jobs are assigned to you.';
+        $msg = 'Query failed: ' . mysqli_error($conn);
         $flag = 0;
-    }
-} else {
-    $msg = 'Query failed: ' . mysqli_error($conn);
-    $flag = 0;
-}
-
-// Function to update job status to "In Progress"
-function updateJobStatus($jobIDs) {
-    include 'connection.php';
-
-    foreach ($jobIDs as $jobID) {
-        $updateQuery = "UPDATE workorders SET currentstate = 'InProgress' WHERE jobid = '$jobID'";
-        $updateResult = mysqli_query($conn, $updateQuery);
-
-        if (!$updateResult) {
-            return false; // Return false if any update fails
-        }
-    }
-
-    return true; // Return true if all updates are successful
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['start'])) {
-    $selectedJobs = $_POST['selectedJobs'];
-
-    if (updateJobStatus($selectedJobs)) {
-        $msg = 'Selected jobs have been moved to "In Progress".';
-		header("Location: validateuser.php?password=" . urlencode($password));
-    } else {
-        $msg = 'Error updating job status.';
     }
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -105,15 +86,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['start'])) {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+           height: auto;
         }
 
         .form-cube {
-            width: 90%;
+            width: auto;
             max-width: 400px;
             background-color: #f2f2f2;
             padding: 20px;
             border-radius: 8px;
+			margin-top:0%;
         }
 
         .form-cube h2,
@@ -174,6 +156,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['start'])) {
             color: #007bff;
             text-decoration: none;
         }
+		.usage {
+			width:auto;
+			border-collapse:collapse;
+			text-align: center;
+	
+		}
+		td,tr {
+			padding:10px;
+		}
 
         @media only screen and (max-width: 600px) {
             .form-cube {
@@ -200,74 +191,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['start'])) {
             }
         }
     </style>
-    <script type="text/javascript">
-        function handleBarcodeInput(event) {
-            var barcodeInput = document.getElementById("barcodeInput");
-            barcodeInput.value = event.data; // Set the input value to the scanned barcode data
-            document.getElementById("myForm").submit(); // Submit the form
-        }
-
-        function submitForm(action) {
-            document.getElementById("myForm").action = action;
-            document.getElementById("myForm").submit();
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            window.addEventListener("message", handleBarcodeInput);
-        });
-    </script>
 </head>
+
 <body>
-<section id="page-top-2">
-    <h4 class="sub-header white-txt">Stock Management System</h4>
-    <br>
-    <h4 class="white-txt center"><center>Logged in as: <strong><?php echo $fittername; ?></strong><center></h4>
-</section>
-<?php
-if ($flag) {
-    echo "
-    <br><br>
-    <form method=\"post\" id=\"myForm\" action=\"\">
-        <div class=\"signup-container\">
-            <!-- Box container containing elements -->
-            <div class=\"form-cube\">";
 
-    while ($row = mysqli_fetch_assoc($result)) {
-        $jobid = $row['jobid'];
-        $type = $row['type'];
-        $projectManager = 'Work order';
 
-        echo "<input type=\"checkbox\" name=\"selectedJobs[]\" value=\"$jobid\">
-              <label for=\"$jobid\"> $jobid | $type | $projectManager</label><br>";
+    <?php
+	
+    if ($flag) {
+        echo "<br><center>Logged in as: <strong>".$fittername."</strong><br>
+		Job ID: <strong>".$jobid."</strong><br>
+        <form method=\"post\" id=\"myForm\" action=\"userused.php\">
+            <div class=\"signup-container\">
+                <!-- Box container containing elements -->
+                <div class=\"form-cube\">
+                    <table class=\"usage\" id=\"lbt\" border='2'>
+                        <thead>
+                            <tr>
+                                <th>Bin Location</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Fitter Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>";
+
+        while ($record = mysqli_fetch_assoc($result)) {
+            echo "<tr class=\"$statusClass\">
+                    <td>{$record['BinLocation']}</td>
+                    <td>{$record['partname']}</td>
+                    <td>{$record['quantity']}</td>
+                    <td>{$record['fittername']}</td>
+                </tr>";
+        }
+
+        echo "</tbody>
+            </table></center><br><br><strong><a href=\"validateuserso.php?password=" . urlencode($password) . "\" style=\"margin-left:46.5%;\"> &#x1F50D Scan New Item</a><strong>
+            <br><br>
+            <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userlogin.html\">Logout</a></center>
+            </div>
+        </div>
+    </form>";
+    } else {
+        echo "Something went wrong. Please contact the administrator.";
     }
-
-    echo "
-            <br><br>
-            <button type=\"submit\" name=\"start\">Start</button>
-            <br><br>
-            <strong><a href=\"validateuser.php?password=" . urlencode($password) . "\" style=\"margin-left:0%;\"> &#x1F50D Scan New Item</a></strong><br><br>
-            <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userloginwo.html\">Logout</a></center>
-            </div>
-        </div>
-    </form>";
-} else {
-    echo "
-    <form method=\"get\" id=\"myForm\" action=\"userorder.php\">
-        <br><br>
-        <div class=\"signup-container\">
-            <!-- Box container containing elements -->  
-            <div class=\"form-cube\">
-                <h2>No jobs are assigned to you</h2>
-                <br><br><strong><a href=\"validateuser.php?password=" . urlencode($password) . "\" style=\"margin-left:0%;\"> &#x1F50D Scan New Item</a></strong><br><br>
-                <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userloginwo.html\">Logout</a></center>
-            </div>
-        </div>
-    </form>";
-}
-
-if (!empty($msg)) {
-    echo "<p>$msg</p>";
-}
-?>
+    ?>
 </body>
+
 </html>

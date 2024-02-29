@@ -7,15 +7,19 @@ $password = $_SESSION['password'];
 $msg = '';
 $flag = 0;
 
-$query = "SELECT * FROM workorders WHERE  (currentstate='Assigned' OR currentstate='Paused')
+$query = "SELECT *
+FROM jobsnew
+WHERE  (currentstate='Assigned' OR currentstate='Paused')
 AND (fitter1='$fittername' OR fitter2='$fittername' OR fitter3='$fittername')";
 $result = mysqli_query($conn, $query);
+
+
 
 if ($result) {
     if (mysqli_num_rows($result) > 0) {
         $flag = 1;
     } else {
-        $msg = 'No jobs are assigned to you.';
+        $msg = 'No jobs found for your allocation.';
         $flag = 0;
     }
 } else {
@@ -26,9 +30,9 @@ if ($result) {
 // Function to update job status to "In Progress"
 function updateJobStatus($jobIDs) {
     include 'connection.php';
-
+$fittername = $_SESSION['fittername'];
     foreach ($jobIDs as $jobID) {
-        $updateQuery = "UPDATE workorders SET currentstate = 'InProgress' WHERE jobid = '$jobID'";
+        $updateQuery = "UPDATE jobsnew SET currentstate = 'InProgress',lastupdatedby='$fittername' WHERE jobid = '$jobID'";
         $updateResult = mysqli_query($conn, $updateQuery);
 
         if (!$updateResult) {
@@ -44,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['start'])) {
 
     if (updateJobStatus($selectedJobs)) {
         $msg = 'Selected jobs have been moved to "In Progress".';
-		header("Location: validateuser.php?password=" . urlencode($password));
+		header("Location: validateuserso.php?password=" . urlencode($password));
     } else {
         $msg = 'Error updating job status.';
     }
@@ -235,7 +239,7 @@ if ($flag) {
     while ($row = mysqli_fetch_assoc($result)) {
         $jobid = $row['jobid'];
         $type = $row['type'];
-        $projectManager = 'Work order';
+        $projectManager = $row['projectmanager'];
 
         echo "<input type=\"checkbox\" name=\"selectedJobs[]\" value=\"$jobid\">
               <label for=\"$jobid\"> $jobid | $type | $projectManager</label><br>";
@@ -245,8 +249,8 @@ if ($flag) {
             <br><br>
             <button type=\"submit\" name=\"start\">Start</button>
             <br><br>
-            <strong><a href=\"validateuser.php?password=" . urlencode($password) . "\" style=\"margin-left:0%;\"> &#x1F50D Scan New Item</a></strong><br><br>
-            <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userloginwo.html\">Logout</a></center>
+            <strong><a href=\"validateuserso.php?password=" . urlencode($password) . "\" style=\"margin-left:0%;\"> &#x1F50D Scan New Item</a></strong><br><br>
+            <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userlogin.html\">Logout</a></center>
             </div>
         </div>
     </form>";
@@ -257,9 +261,9 @@ if ($flag) {
         <div class=\"signup-container\">
             <!-- Box container containing elements -->  
             <div class=\"form-cube\">
-                <h2>No jobs are assigned to you</h2>
-                <br><br><strong><a href=\"validateuser.php?password=" . urlencode($password) . "\" style=\"margin-left:0%;\"> &#x1F50D Scan New Item</a></strong><br><br>
-                <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userloginwo.html\">Logout</a></center>
+                <h2>No jobs are assigned for you</h2>
+                <br><br><strong><a href=\"validateuserso.php?password=" . urlencode($password) . "\" style=\"margin-left:0%;\"> &#x1F50D Scan New Item</a></strong><br><br>
+                <center><a id=\"\" class=\"ri-logout-circle-line\" href=\"userlogin.html\">Logout</a></center>
             </div>
         </div>
     </form>";

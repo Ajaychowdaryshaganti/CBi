@@ -1,50 +1,60 @@
 <?php
+// Start a session
 session_start();
 
-$username=$_POST['staffID'];
-$password=$_POST['password'];
+// Include the database connection file
+include 'connection.php';
 
-//if(($username=='1000')&&($password=='cbi1234'))
-	if(1)
-{
-	$_SESSION['authenticated']=1;
-header("Location: Dashboard.php");
+// Function to check the username and password against the database
+function authenticateUser($username, $password) {
+    global $conn; // Access the database connection
 
+    $sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $username, $password);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+        // Set user data in the session
+        $_SESSION['Loggedinas'] = $user['username'];
+        $_SESSION['accesslevel'] = $user['accesslevel'];
+        $accesslevel = $user['accesslevel'];
+        return true;
+    } else {
+        return false;
+    }
+
+    $stmt->close();
 }
-else
-{
-echo '
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <!-- Viewport set to scale 1.0 -->       
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Descriptive meta tags -->   
-        <meta name="description" content="Applicant login page for CorpU">
-		<meta name="keywords" content="CorpU, recruitment, IT">
-		<meta name="author" content="Group 23">
-        <title>CorpU &#8211; Error</title>
-        <!-- References to external basic CSS file -->
-        <link rel="stylesheet" type="text/css" href="styles/style.css">
-        <!-- Favicon for tab -->
-        <link rel="icon" type="image/x-icon" href="images/game-fill.png">
-        <!-- References to web icons from Remixicon.com -->
-        <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-        <!-- References to external fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    </head>
-    <body>
-<div class="signup-container">
-<div class="form-cube">
-<h2><strong><center>Please enter valid login credentials</h2> 
-    </center></strong></body>
-</div>
-</div>
-</body>
-';
 
-} 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve username and password from the POST request
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+
+    // Call the authentication function
+    if (authenticateUser($username, $password)) {
+		
+		
+		
+        $response = [
+            'status' => 'success',
+            'message' => 'Authentication successful',
+            'accesslevel' => $_SESSION['accesslevel']
+        ];
+
+		
+    } else {
+        $response = [
+            'status' => 'error',
+            'message' => 'Invalid Credentials'
+        ];
+    }
+
+    // Send JSON response
+    header('Content-Type: application/json');
+    echo json_encode($response);
+}
 ?>
