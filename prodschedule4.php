@@ -30,11 +30,10 @@ else{
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
+  									<style>
         .{
             display: flex;
 			overflow:hidden !! important;
-			table-layout:fixed;
         }
 
         /* Your existing styles here */
@@ -217,9 +216,6 @@ box-shadow: 1px 1px 0px rgba(0,0,0,0.1);
   justify-content:center;
   align-items:center;
 }
-#confirmationModal{
-	background-color:transparent;
-}
 
 .line{
   position:absolute;
@@ -322,17 +318,6 @@ hr{
             cursor: pointer;
 			margin-left:1%;
 
-        }        #refresh1 {
-            background-color: #007BFF; /* Blue color, you can change it */
-            color: #fff;
-
-            cursor: pointer;
-			margin-left:0.6%;
-			margin-right:2%;
-			border: 2px solid transparent;
-    border-radius: 8px;
-    padding: 8px 20px;
-
         }        #refresh {
             background-color: #007BFF; /* Blue color, you can change it */
             color: #fff;
@@ -359,16 +344,6 @@ hr{
             border-radius: 3px;
 			font-size:15px;
 			height:auto;
-			
-        }
-		        .editable1 {
-            flex: 1;
-            padding: 1px;
-            border: 1px solid ;
-            border-radius: 3px;
-			font-size:15px;
-			height:auto;
-			
         }
 #deletebutton{
 		font: 400 1rem 'Jost', sans-serif;
@@ -505,7 +480,7 @@ li {
             color: #fff;
             border: none;
             padding: 5px;
-            border-radius: 100%;
+            border-radius: 200%;
         }
 
         #goToTop {
@@ -516,74 +491,6 @@ li {
             bottom: 20px;
         }
 
-		.editablecontainer {
-  text-align: center; /* Center the content horizontally */
-  margin-top:-2%;
-  margin-bottom:1%;
-}
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 28px;
-}
-
-.switch input { 
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 3px;
-  bottom: 5px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-.editablecontainer h4{
-	margin-left:-250%;
-}
-
         /* Media query to show the menu when the checkbox is checked (hamburger icon clicked) */
         @media (max-width:3000px) {
             nav {
@@ -593,7 +500,7 @@ input:checked + .slider:before {
 
         }
 
-    </style>
+  </style>
 </head>
 <?php
 // Start a PHP session
@@ -632,27 +539,16 @@ if (isset($_SESSION['defaultWeek'])) {
 ?>
 <form method="post"></form>
 <body>
-    <nav id="menu1">
-
-        <ul>
-            <li><a href="Dashboard.php"><p>Home</p></a></li>
-            <li><a href="Stock.php"><p>Stock</p></a></li>
-            <li><a href="prodschedule.php"><p>Production Schedule</p></a></li>
-		  <li><a href="workorders.php" id="select">
-            <p>Work Orders</p>
-          </a></li>
-		  <li><a href="workordershistory.php" id="select">
-            <p>Work Orders History</p>
-          </a></li>
-            <li><a href="Viewusers1.php"><p>View Users</p></a></li>
-            <li><a href="manageusers1.php"><p>Manage Users</p></a></li>
-            <li><a href="updatestock1.php"><p>Update Stock Data</p></a></li>
-            <li><a href="usage.php"><p>Usage</p></a></li>
-            <li><a href="reorder.php"><p>Re-Order</p></a></li>
-            <li><a href="orderhistory.php"><p>Order History</p></a></li>
-            <!--<li><a href="history.php"><p>Update History</p></a></li>-->
-        </ul>
-    </nav>
+  <nav id="menu1">
+    <ul>
+        <li><a href="Dashboard4.php"><p>Home</p></a></li>
+        <li><a href="Stock4.php"><p>Stock</p></a></li>
+        <li><a href="prodschedule4.php"><p>Production Schedule</p></a></li>
+        <li><a href="workorders4.php"><p>Work Orders</p></a></li>
+        <li><a href="usage4.php"><p>Usage</p></a></li>
+        <li><a href="logout.php"><p>Logout</p></a></li>
+    </ul>
+</nav>
  
     <div id="top-head">
         <center>
@@ -685,12 +581,14 @@ if (isset($_SESSION['defaultWeek'])) {
 			</div>
 			
 			<div>
+			
 <input type="checkbox" id="Toggle">
 
 <label for="Toggle">
   <div class="Menu-container">
     <div class="line" id="active"></div>
   </div>
+
 </label>
         <div id="cbi-logo"><img src="images/cbi-logo.png" alt="CBI logo"></div>	
 		</div>
@@ -698,79 +596,21 @@ if (isset($_SESSION['defaultWeek'])) {
 		
 </div>
     </div>
+	<div id="top"></div>
 <br>
-<div id="top"></div>
-<div id="newJobForm">
-    <label>Add New Job:</label>
-    <input type="text" id="newJobID" placeholder="Sales Order No" required>
-    <button id="addNewJobButton" onclick="addNewJob()">ADD</button>
-	
-</div><div id="addjobmsg"><center><h2>Select a week to add new job</h2><br><center></div>
+
 <button id="refresh" onclick="refresh()">Refresh</button><button class="logout" id="fill" onclick="window.location.href = 'logout.php'">Logout</button><br>
 <div id="errormsgs"></div>
-<div class="editablecontainer">
-	<label class="switch"><h4>Editing</h4>
-  <input type="checkbox">
-  <span class="slider round"></span>
-</label>
-</div>
+
+
 	<div id="contentContainer"></div>
-	<div id="bottom"></div>
+			<div id="bottom"></div>
     <a id="goToTop" href="#top">▲</a>
 <a id="goToBottom" href="#bottom">▼</a>
-	<br>
-	
-<button id="deletebutton" class="botbuttons1" onclick="deletejob()"> Delete </button>&nbsp;
-<button id="fill-green" class="botbuttons2" onclick="initPop()"> Move </button>
-<button id="refresh1" onclick="refresh()">Refresh</button>
+    <br>
+
 	<div id="caluculationsContainer"></div>
-	<div id="check"></div>
-<div id="confirmationModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Confirm Deletion</h2>
-        <p>Are you sure you want to delete the following jobs?</p>
-        <ul id="jobIdList"></ul>
-        <button id="confirmDelete">Yes, delete</button>
-    </div>
-</div>
-   <div id="moveJobsPop" class="modal2">
-   <h3>Select week to move selected jobs:<span class="close1">&times;</span>
-        <div id="yearContainerPop">
-            <label for="yearPop">Select Year: </label>
-            <select id="yearPop" onchange="updateWeeksPop()">
-                <!-- The years will be populated dynamically -->
-            </select>
-        </div>
-
-        <div id="monthsContainerPop">
-            <label for="monthPop">Select Month: </label>
-            <select id="monthPop" onchange="updateWeeksPop()">
-                <!-- The months will be populated dynamically -->
-                <option value="January">January</option>
-                <option value="February">February</option>
-                <option value="March">March</option>
-                <option value="April">April</option>
-                <option value="May">May</option>
-                <option value="June">June</option>
-                <option value="July">July</option>
-                <option value="August">August</option>
-                <option value="September">September</option>
-                <option value="October">October</option>
-                <option value="November">November</option>
-                <option value="December">December</option>
-            </select>
-        </div>
-
-        <div id="weekContainerPop">
-            <label for="weekPop">Select Week:</label>
-            <select id="weekPop">
-                <!-- Week options will be added dynamically -->
-            </select>
-        </div>
-		<button id="fill" onclick="movejob()">Move</button>
-		<h4 id="errormsgmove"></h4>
-    </div>
+ 
 
 
 
@@ -801,16 +641,49 @@ if (isset($_SESSION['defaultWeek'])) {
 
       yearDropdown.value = currentYear; // Set current year as default selected
     }
-function refresh() {
-    var selectedOption = $('#week').val();
+	function refresh(){
+		
+		var selectedOption = $('#week').val();
+		loadData(selectedOption);
+	}
+	
+// Handle change event of #week select element
+$('#week').on('change', function() {
+    var selectedOption = $(this).val();
+	 var firstOption = $('#week option:first').val();
+	 disable1stOption(firstOption,selectedOption)
+	 
     loadData(selectedOption);
-	document.querySelector('.switch input').checked=false;
-	var isEditable=document.querySelector('.switch input').checked;
+});
 
+    // Manually trigger the initial load on page load
+    var selectedOption = $('#week').val();
+	 var firstOption = $('#week option:first').val();
+    loadData(selectedOption);
+	disable1stOption(firstOption,selectedOption)
+	//console.log(selectedOption);
+	//console.log(firstOption);
 
+		
+		function disable1stOption(first,selected){
+	
+	var cals=document.getElementById('caluculationsContainer');
+	
+	if(first===selected){
+		//console.log('yes');
+		//addjob.style.display='none';
+		cals.style.display='none';
+		//addjobmsg.style.display='block';
+	}
+	else{
+		//console.log('no');
+		//addjob.style.display='block';
+		cals.style.display='block';
+		//addjobmsg.style.display='none';
+	}
+	
 }
 
-	
 function getWeeksOfMonth(year, month) {
   const weeks = [];
   const firstDay = new Date(year, month, 1);
@@ -842,11 +715,6 @@ function getWeeksOfMonth(year, month) {
 
   return weeks;
 }
-
-
-
-
-
 
     // Function to update the months and weeks based on user selection
     function updateMonthsAndWeeks() {
@@ -908,226 +776,6 @@ function getWeeksOfMonth(year, month) {
 		//if(selectedOption
     }
 	
-function deletejob() {
-    // Collect the selected job IDs
-    const selectedJobIds = [];
-    const checkboxes = document.querySelectorAll('input[name="selectedJobs[]"]:checked');
-    checkboxes.forEach(function(checkbox) {
-        selectedJobIds.push(checkbox.value);
-    });
-
-    // Make sure there are selected jobs
-    if (selectedJobIds.length === 0) {
-        alert("Please select jobs to delete.");
-        return;
-    }
-
-    // Show the confirmation modal
-    const modal = document.getElementById('confirmationModal');
-    const contentContainer = document.getElementById('contentContainer');
-    const jobIdList = document.getElementById('jobIdList');
-    const confirmDeleteButton = document.getElementById('confirmDelete');
-    jobIdList.innerHTML = ''; // Clear previous list items
-
-    // Populate job IDs in the modal
-    selectedJobIds.forEach(function(jobId) {
-        const listItem = document.createElement('li');
-        listItem.textContent = jobId;
-        jobIdList.appendChild(listItem);
-    });
-
-    modal.style.display = 'block';
-
-    // Handle confirmation or cancellation
-    confirmDeleteButton.onclick = function() {
-        modal.style.display = 'none'; // Hide the modal
-
-        // AJAX request to delete jobs
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'psdeletejobs.php');
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.status === 'success') {
-                        console.log("Deleted successfully");
-                        var selectedOption = $('#week').val();
-                        loadData(selectedOption);
-                    } else {
-                        console.error("Server returned an unexpected response:", response);
-                        alert("Failed to delete jobs. Please try again.");
-                    }
-                } catch (error) {
-                    console.error("Error parsing JSON response:", error);
-                    alert("Failed to parse server response.");
-                }
-            } else {
-                console.error("Server returned an error status:", xhr.status);
-                alert("Failed to delete jobs. Please try again.");
-            }
-        };
-
-        xhr.send('jobIds=' + JSON.stringify(selectedJobIds));
-    };
-
-    // Handle modal close button
-    const closeButton = document.querySelector('.close');
-    closeButton.onclick = function() {
-        modal.style.display = 'none';
-        modal2.style.display = 'none';
-    };
-}
-
-
-    function populateYearsPop() {
-        const yearDropdown = document.getElementById("yearPop");
-        const yearsToShow = 15; // Total years to display, 10 previous years and 5 forward years
-        const currentYearPop = new Date().getFullYear();
-
-        for (let i = currentYearPop - 10; i <= currentYearPop + 4; i++) {
-            const option = document.createElement("option");
-            option.value = i;
-            option.text = i;
-            yearDropdown.appendChild(option);
-        }
-
-        yearDropdown.value = currentYearPop; // Set current year as the default selected
-    }
-
-    function updateWeeksPop() {
-        const yearDropdown = document.getElementById("yearPop");
-        const monthDropdown = document.getElementById("monthPop");
-        const weekDropdown = document.getElementById("weekPop");
-
-        const selectedYearPop = parseInt(yearDropdown.value, 10);
-        const selectedMonthPop = monthDropdown.value;
-        const monthIndexPop = months.indexOf(selectedMonthPop);
-				const selectedWeek = weekDropdown.value;
-				console.log('test:'+selectedWeek);
-
-        // Clear the existing options and populate the week dropdown
-        weekDropdown.innerHTML = "";
-
-        // Calculate the number of days in the selected month
-        const daysInMonthPop = new Date(selectedYearPop, monthIndexPop + 1, 0).getDate();
-
-        // Calculate the number of weeks
-        let weekNumber = 1;
-        let startDay = 1; // Default start day for the first week
-        let endDay = 0; // Default end day for the first week
-
-        for (let day = 1; day <= daysInMonthPop; day++) {
-            const currentDate = new Date(selectedYearPop, monthIndexPop, day);
-            const currentDay = currentDate.getDay(); // 0 for Sunday, 1 for Monday, ...
-
-            if (currentDay === 1) {
-                // Monday, start of a new week
-                startDay = day;
-            } else if (currentDay === 0 || day === daysInMonthPop) {
-                // Sunday or end of the month, end of the week
-                endDay = day;
-
-                // Create the week option if it has at least one weekday
-                if (endDay > startDay) {
-                    const startOfWeekPop = new Date(selectedYearPop, monthIndexPop, startDay);
-                    const endOfWeekPop = new Date(selectedYearPop, monthIndexPop, endDay);
-
-                    const formattedWeekPop = `Week ${weekNumber} (${formatDatePop(startOfWeekPop)} to ${formatDatePop(endOfWeekPop)})`;
-                    const weekOptionPop = document.createElement("option");
-                    weekOptionPop.value = `${formatDatePop(startOfWeekPop)},${formatDatePop(endOfWeekPop)}`;
-                    weekOptionPop.textContent = formattedWeekPop;
-                    weekDropdown.appendChild(weekOptionPop);
-
-                    // Update for the next week
-                    weekNumber++;
-                }
-            }
-        }
-
-        // Call the function to load data based on the selected week
-        loadDataPop(weekDropdown.value);
-    }
-
-    function formatDatePop(date) {
-        const yearPop = date.getFullYear();
-        const monthPop = String(date.getMonth() + 1).padStart(2, "0");
-        const dayPop = String(date.getDate()).padStart(2, "0");
-        return `${dayPop}-${monthPop}-${yearPop}`;
-    }
-
-    function loadDataPop(selectedWeek) {
-        // Replace this with your code to load data based on the selected week
-        console.log("Data loaded for week: " + selectedWeek);
-    }
-
-function initPop() {
-    const currentMonthIndexPop = new Date().getMonth();
-    const currentYearPop = new Date().getFullYear();
-
-    // Initial population of the year dropdown
-    populateYearsPop();
-
-    // Set the default selected month to the current month
-    const monthDropdown = document.getElementById("monthPop");
-    monthDropdown.value = months[currentMonthIndexPop];
-
-    // Update weeks based on the selected month
-    updateWeeksPop();
-	
-	const modal2 = document.getElementById('moveJobsPop');
-	modal2.style.display = 'block';
-	    const closeButton = document.querySelector('.close1');
-    closeButton.onclick = function() {
-        //modal.style.display = 'none';
-        modal2.style.display = 'none';
-    };
-	
-}
-
-function movejob() {
-    // Collect the selected job IDs
-    const selectedJobIds = [];
-    const checkboxes = document.querySelectorAll('input[name="selectedJobs[]"]:checked');
-    checkboxes.forEach(function (checkbox) {
-        selectedJobIds.push(checkbox.value);
-    });
-
-    const weekDropdown = document.getElementById("weekPop");
-    const selectedWeek = weekDropdown.value;
-	const modal2 = document.getElementById('moveJobsPop');
-	const error2 = document.getElementById('errormsgmove');
-    // Prepare the data as a JSON object
-    const data = {
-        selectedJobIds: selectedJobIds,
-        selectedWeek: selectedWeek,
-    };
-
-    // Use jQuery to send the AJAX request
-    $.ajax({
-        type: "POST",
-        url: "psmovejobs.php",
-        data: JSON.stringify(data),
-        contentType: "application/json",
-        success: function (response) {
-            // Handle the response from the server here
-            if (response.success) {
-                console.log("Record updated successfully");
-				modal2.style.display = 'none';
-				        var selectedOption = $('#week').val();
-                        loadData(selectedOption);
-				
-            } else {
-                console.error("Failed to update jobs: " + response.message);
-				error2.innerHTML="Failed to move Jobs. Technical Issue";
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error("AJAX request failed: " + error);
-        }
-    });
-}
 
 	function getMonthName(monthIndex) {
   const months = [
@@ -1158,15 +806,11 @@ function movejob() {
         // Make an AJAX request to your PHP script
         $.ajax({
             type: 'POST',
-            url: 'psdata.php', // Replace with your PHP script's URL
+            url: 'psdata4.php', // Replace with your PHP script's URL
             data: { option: selectedOption }, // Send data to PHP script if needed
             success: function(response) {
                 // Update the content container with the PHP-generated content
                 $('#contentContainer').html(response);
-				runAfterContentLoads();
-				 var isEditable = this.checked;
-		 editing(isEditable);
-				
 				
             },
             error: function(xhr, status, error) {
@@ -1179,7 +823,7 @@ function movejob() {
 function loadCal(selectedOption) {
     $.ajax({
         type: 'POST',
-        url: 'pscals.php',
+        url: 'pscals4.php',
         data: { option: selectedOption },
         success: function(response) {
 			
@@ -1193,8 +837,6 @@ function loadCal(selectedOption) {
             console.error(xhr.responseText);
         }
     });
-	
-	
 }
 
 function gettotal() {
@@ -1220,24 +862,6 @@ var nextOption = getNextOption(selectedOption);
 
 console.log(extrareq);
 
-// AJAX call to send data to pscarryfwd.php
-$.ajax({
-    type: 'POST',
-    url: 'pscarryfwd.php',
-    data: {
-        extrareq: extrareq,
-        nextOption: nextOption
-    },
-    success: function(response) {
-        // Handle the success response from the server
-        console.log(response);
-		
-    },
-    error: function(xhr, status, error) {
-        // Handle errors
-        console.error(xhr.responseText);
-    }
-});
 
 	
         }
@@ -1250,35 +874,49 @@ $.ajax({
 			var selectedOption = $('#week').val();
 var nextOption = getNextOption(selectedOption);
 
-
-// AJAX call to send data to pscarryfwd.php
-$.ajax({
-    type: 'POST',
-    url: 'pscarryfwd.php',
-    data: {
-        extrareq: extrareq,
-        nextOption: nextOption
-    },
-    success: function(response) {
-        // Handle the success response from the server
-        console.log(response);
-    },
-    error: function(xhr, status, error) {
-        // Handle errors
-        console.error(xhr.responseText);
-    }
-});
-		
-
-
 		}
 		}		else {
             console.log('Total capacity not found in local storage.');
         }
     }, 500);
 	
-	
 
+}
+
+
+// Handle change event of #week select element
+$('#week').on('change', function() {
+    var selectedOption = $(this).val();
+	 var firstOption = $('#week option:first').val();
+	 disable1stOption(firstOption,selectedOption)
+	 
+    loadData(selectedOption);
+});
+
+    // Manually trigger the initial load on page load
+
+	//console.log(selectedOption);
+	//console.log(firstOption);
+
+
+function disable1stOption(first,selected){
+	
+	//var addjob=document.getElementById('newJobForm');
+	var cals=document.getElementById('caluculationsContainer');
+	
+	if(first===selected){
+		//console.log('yes');
+		//addjob.style.display='none';
+		cals.style.display='none';
+		//addjobmsg.style.display='block';
+	}
+	else{
+		//console.log('no');
+		//addjob.style.display='block';
+		cals.style.display='block';
+		//addjobmsg.style.display='none';
+	}
+	
 }
 
 function getNextOption(selectedOption) {
@@ -1339,172 +977,8 @@ nextOption = `${startDate},${formattedNextSunday}`;
 
   return nextOption;
 }
-	
-document.addEventListener('DOMContentLoaded', function () {
-    // Function to disable dropdowns initially
-    disableDropdowns();
 
 
-    // Add event listener to the toggle switch
-    document.querySelector('.switch input').addEventListener('change', function () {
-        var isEditable = this.checked;
-		 editing(isEditable);
-    });
-});
-
-// Function to disable dropdowns initially
-function disableDropdowns() {
-	console.log('disable drops');
-    var cells = document.querySelectorAll('.editable');
-	var isEditable=document.querySelector('.switch input').checked;
-	//console.log(isEditable);
-    cells.forEach(function (cell) {
-        var dropdowns = cell.querySelectorAll('select');
-        dropdowns.forEach(function (dropdown) {
-            dropdown.disabled = !isEditable;
-        });
-    });
-}
-
-function runAfterContentLoads() {
-    // Check if the content is loaded
-    if (document.readyState === 'complete') {
-        // If the content is fully loaded, call your function
-        disableDropdowns();
-    } else {
-        // If not, wait for the 'load' event and then call your function
-        window.addEventListener('load', disableDropdowns);
-    }
-}
-
-runAfterContentLoads();
-function editing(isEditable){
-	
-	
-        var cells = document.querySelectorAll('.editable');
-        cells.forEach(function (cell) {
-            // Set contentEditable for regular cells
-            cell.contentEditable = isEditable;
-
-            // Disable dropdowns if they are select elements within descendants
-            var dropdowns = cell.querySelectorAll('select');
-            dropdowns.forEach(function (dropdown) {
-                dropdown.disabled = !isEditable;
-            });
-        });
-
-        if (isEditable) {
-            // Enable editing, so bind the blur event for AJAX calls
-            $('#contentContainer').on('blur', '.editable', function () {
-                // Your existing blur event handling code for AJAX calls
-                // ...
-            });
-        } else {
-            // Disable editing, so unbind the blur event
-            $('#contentContainer').off('blur', '.editable');
-        }
-}
-
-
-	
-	
-$(document).ready(function() {
-    // Function to load data and handle inline editing
-
-
-    // Function to handle inline editing
-    $('#contentContainer').on('blur', '.editable', function() {
-        // Get the job ID, column name, and new value
-        var jobID = $(this).data('jobid');
-        var columnName = $(this).data('columnname');
-            if ($(this).find('select').length > 0) {
-        newValue = $(this).find('select').val(); // Get the selected value of the dropdown
-    } else {
-        newValue = $(this).text(); // Get the text content if it's not a dropdown
-    }
-        var cell = $(this); // Store a reference to the cell element
-		
-		if (columnName === 'completionrate') {
-    // Remove the '%' symbol if it exists at the end of newValue
-    newValue = newValue.replace(/%$/, ''); // This removes '%' at the end of the string
-}
-		
-		console.log(jobID);
-		console.log(columnName);
-		console.log(newValue);
-if (typeof columnName !== 'undefined') {
-        // Make an AJAX request to update the data
-$.ajax({
-            type: 'POST',
-            url: 'psupdateRow.php', // Replace with your PHP script's URL for updating
-            data: { jobID: jobID, columnName: columnName, newValue: newValue },
-            success: function(response) {
-                // Log the response to the console
-                console.log(response);
-
-                // Check if the update was successful
-                if (response.status === 'success') {
-                    // Update the cell background color to green
-                    cell.css('background-color', '#80ff80');
-                } else {
-                    // Update the cell background color to red
-                    cell.css('background-color', '#ffad99');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-
-			// Update the cell background color to red in case of an error
-			if (typeof columnName !== 'undefined') {
-				cell.css('background-color', '#ffad99');
-			}
-
-            }
-        }); 
-}
-    }); 
-
-
-
-// Handle change event of #week select element
-$('#week').on('change', function() {
-    var selectedOption = $(this).val();
-	 var firstOption = $('#week option:first').val();
-	 disable1stOption(firstOption,selectedOption)
-	 
-    loadData(selectedOption);
-});
-
-    // Manually trigger the initial load on page load
-    var selectedOption = $('#week').val();
-	 var firstOption = $('#week option:first').val();
-    loadData(selectedOption);
-	disable1stOption(firstOption,selectedOption)
-	//console.log(selectedOption);
-	//console.log(firstOption);
-});
-
-
-function disable1stOption(first,selected){
-	
-	var addjob=document.getElementById('newJobForm');
-	var addjobmsg=document.getElementById('addjobmsg');
-	var cals=document.getElementById('caluculationsContainer');
-	
-	if(first===selected){
-		//console.log('yes');
-		addjob.style.display='none';
-		cals.style.display='none';
-		addjobmsg.style.display='block';
-	}
-	else{
-		//console.log('no');
-		addjob.style.display='block';
-		cals.style.display='block';
-		addjobmsg.style.display='none';
-	}
-	
-}
 
 
 
@@ -1547,7 +1021,10 @@ function disable1stOption(first,selected){
     // Initial population of the year dropdown and months/weeks tabs
     populateYears();
     updateMonthsAndWeeks();
-
+	    var selectedOption = $('#week').val();
+	 var firstOption = $('#week option:first').val();
+    loadData(selectedOption);
+	disable1stOption(firstOption,selectedOption)
 
 
 // Event listener for the burger menu
@@ -1576,48 +1053,8 @@ burger.addEventListener("change", () => {
     }
 });
 
+
 let errorCount = 0; // Initialize the error count
-
-function addNewJob() {
-    // Get the job ID input element
-    const jobIDInput = document.getElementById("newJobID");
-
-    // Get the entered job ID value
-    const jobID = jobIDInput.value.trim(); // Trim to remove leading/trailing whitespace
-
-    // Get the selected option value
-    const selectedOption = document.getElementById("week").value; // Use the correct ID
-
-    // Check if the job ID is not empty
-    if (jobID !== "") {
-        // Prepare data for the AJAX request
-        const data = {
-            jobID: jobID,
-            selectedOption: selectedOption
-        };
-
-        // Make an AJAX POST request to psaddnewjob.php
-        $.ajax({
-            type: "POST",
-            url: "psaddnewjob.php",
-            data: data,
-            success: function(response) {
-                // Handle the success response from the server
-                if (response.status === 'success') {
-                    // Reload the page on success
-                    refresh();
-                } else {
-                    // Display the error message in the error div
-                    document.getElementById("errormsgs").innerHTML = '<h3 style="color: red;">Error adding new job: ' + response.message + '</h3>';
-                }
-            }
-        });
-    } else {
-        // Job ID is empty, display an error message
-        alert("Job ID cannot be empty. Please enter a valid job ID.");
-    }
-}
-
 
 	  	<?php if (isset($_SESSION['defaultWeek'])) : ?>
     // Retrieve the default week value from the PHP session

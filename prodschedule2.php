@@ -34,7 +34,6 @@ else{
         .{
             display: flex;
 			overflow:hidden !! important;
-			table-layout:fixed;
         }
 
         /* Your existing styles here */
@@ -217,9 +216,6 @@ box-shadow: 1px 1px 0px rgba(0,0,0,0.1);
   justify-content:center;
   align-items:center;
 }
-#confirmationModal{
-	background-color:transparent;
-}
 
 .line{
   position:absolute;
@@ -322,17 +318,6 @@ hr{
             cursor: pointer;
 			margin-left:1%;
 
-        }        #refresh1 {
-            background-color: #007BFF; /* Blue color, you can change it */
-            color: #fff;
-
-            cursor: pointer;
-			margin-left:0.6%;
-			margin-right:2%;
-			border: 2px solid transparent;
-    border-radius: 8px;
-    padding: 8px 20px;
-
         }        #refresh {
             background-color: #007BFF; /* Blue color, you can change it */
             color: #fff;
@@ -359,16 +344,6 @@ hr{
             border-radius: 3px;
 			font-size:15px;
 			height:auto;
-			
-        }
-		        .editable1 {
-            flex: 1;
-            padding: 1px;
-            border: 1px solid ;
-            border-radius: 3px;
-			font-size:15px;
-			height:auto;
-			
         }
 #deletebutton{
 		font: 400 1rem 'Jost', sans-serif;
@@ -495,7 +470,6 @@ li {
 #confirmDelete:hover {
     background-color: #cc0000;
 }
-
         #goToTop, #goToBottom {
             position: fixed;
             right: 20px;
@@ -505,7 +479,7 @@ li {
             color: #fff;
             border: none;
             padding: 5px;
-            border-radius: 100%;
+            border-radius:100%;
         }
 
         #goToTop {
@@ -515,11 +489,10 @@ li {
         #goToBottom {
             bottom: 20px;
         }
-
 		.editablecontainer {
   text-align: center; /* Center the content horizontally */
-  margin-top:-2%;
-  margin-bottom:1%;
+  margin-top:-4%;
+  margin-bottom:2%;
 }
 .switch {
   position: relative;
@@ -584,6 +557,7 @@ input:checked + .slider:before {
 	margin-left:-250%;
 }
 
+
         /* Media query to show the menu when the checkbox is checked (hamburger icon clicked) */
         @media (max-width:3000px) {
             nav {
@@ -632,27 +606,22 @@ if (isset($_SESSION['defaultWeek'])) {
 ?>
 <form method="post"></form>
 <body>
-    <nav id="menu1">
+    <!--<nav id="menu1">
 
         <ul>
             <li><a href="Dashboard.php"><p>Home</p></a></li>
             <li><a href="Stock.php"><p>Stock</p></a></li>
             <li><a href="prodschedule.php"><p>Production Schedule</p></a></li>
-		  <li><a href="workorders.php" id="select">
-            <p>Work Orders</p>
-          </a></li>
-		  <li><a href="workordershistory.php" id="select">
-            <p>Work Orders History</p>
-          </a></li>
+            <li><a href="viewjobs1.php"><p>View Jobs</p></a></li>
+            <li><a href="managejobs1.php"><p>Manage Jobs</p></a></li>
             <li><a href="Viewusers1.php"><p>View Users</p></a></li>
             <li><a href="manageusers1.php"><p>Manage Users</p></a></li>
             <li><a href="updatestock1.php"><p>Update Stock Data</p></a></li>
             <li><a href="usage.php"><p>Usage</p></a></li>
             <li><a href="reorder.php"><p>Re-Order</p></a></li>
             <li><a href="orderhistory.php"><p>Order History</p></a></li>
-            <!--<li><a href="history.php"><p>Update History</p></a></li>-->
         </ul>
-    </nav>
+    </nav>-->
  
     <div id="top-head">
         <center>
@@ -685,13 +654,14 @@ if (isset($_SESSION['defaultWeek'])) {
 			</div>
 			
 			<div>
+			<!--
 <input type="checkbox" id="Toggle">
 
 <label for="Toggle">
   <div class="Menu-container">
     <div class="line" id="active"></div>
   </div>
-</label>
+</label>-->
         <div id="cbi-logo"><img src="images/cbi-logo.png" alt="CBI logo"></div>	
 		</div>
         <hr>
@@ -699,13 +669,13 @@ if (isset($_SESSION['defaultWeek'])) {
 </div>
     </div>
 <br>
-<div id="top"></div>
+	<div id="top"></div>
 <div id="newJobForm">
     <label>Add New Job:</label>
     <input type="text" id="newJobID" placeholder="Sales Order No" required>
     <button id="addNewJobButton" onclick="addNewJob()">ADD</button>
-	
 </div><div id="addjobmsg"><center><h2>Select a week to add new job</h2><br><center></div>
+<button id="fill-green" onclick="window.location.href = 'workorders2.php'">Work Orders</button>&nbsp;<button class="logout" id="fill" onclick="window.location.href = 'workordershistory2.php'">Work Order History</button>
 <button id="refresh" onclick="refresh()">Refresh</button><button class="logout" id="fill" onclick="window.location.href = 'logout.php'">Logout</button><br>
 <div id="errormsgs"></div>
 <div class="editablecontainer">
@@ -714,15 +684,14 @@ if (isset($_SESSION['defaultWeek'])) {
   <span class="slider round"></span>
 </label>
 </div>
+
 	<div id="contentContainer"></div>
-	<div id="bottom"></div>
+		<div id="bottom"></div>
     <a id="goToTop" href="#top">▲</a>
 <a id="goToBottom" href="#bottom">▼</a>
-	<br>
-	
+    <br>
 <button id="deletebutton" class="botbuttons1" onclick="deletejob()"> Delete </button>&nbsp;
 <button id="fill-green" class="botbuttons2" onclick="initPop()"> Move </button>
-<button id="refresh1" onclick="refresh()">Refresh</button>
 	<div id="caluculationsContainer"></div>
 	<div id="check"></div>
 <div id="confirmationModal" class="modal">
@@ -801,16 +770,12 @@ if (isset($_SESSION['defaultWeek'])) {
 
       yearDropdown.value = currentYear; // Set current year as default selected
     }
-function refresh() {
-    var selectedOption = $('#week').val();
-    loadData(selectedOption);
-	document.querySelector('.switch input').checked=false;
-	var isEditable=document.querySelector('.switch input').checked;
+	function refresh(){
+		
+		var selectedOption = $('#week').val();
+		loadData(selectedOption);
+	}
 
-
-}
-
-	
 function getWeeksOfMonth(year, month) {
   const weeks = [];
   const firstDay = new Date(year, month, 1);
@@ -844,7 +809,51 @@ function getWeeksOfMonth(year, month) {
 }
 
 
+document.addEventListener('DOMContentLoaded', function () {
+    // Function to disable dropdowns initially
+    disableDropdowns();
 
+    // Add event listener to the toggle switch
+    document.querySelector('.switch input').addEventListener('change', function () {
+        var isEditable = this.checked;
+
+        var cells = document.querySelectorAll('.editable');
+        cells.forEach(function (cell) {
+            // Set contentEditable for regular cells
+            cell.contentEditable = isEditable;
+
+            // Disable dropdowns if they are select elements within descendants
+            var dropdowns = cell.querySelectorAll('select');
+            dropdowns.forEach(function (dropdown) {
+                dropdown.disabled = !isEditable;
+            });
+        });
+
+        if (isEditable) {
+            // Enable editing, so bind the blur event for AJAX calls
+            $('#contentContainer').on('blur', '.editable', function () {
+                // Your existing blur event handling code for AJAX calls
+                // ...
+            });
+        } else {
+            // Disable editing, so unbind the blur event
+            $('#contentContainer').off('blur', '.editable');
+        }
+    });
+});
+
+// Function to disable dropdowns initially
+function disableDropdowns() {
+    var cells = document.querySelectorAll('.editable');
+	var isEditable=document.querySelector('.switch input').checked;
+	//console.log(isEditable);
+    cells.forEach(function (cell) {
+        var dropdowns = cell.querySelectorAll('select');
+        dropdowns.forEach(function (dropdown) {
+            dropdown.disabled = !isEditable;
+        });
+    });
+}
 
 
 
@@ -1163,10 +1172,7 @@ function movejob() {
             success: function(response) {
                 // Update the content container with the PHP-generated content
                 $('#contentContainer').html(response);
-				runAfterContentLoads();
-				 var isEditable = this.checked;
-		 editing(isEditable);
-				
+				disableDropdowns();
 				
             },
             error: function(xhr, status, error) {
@@ -1193,8 +1199,6 @@ function loadCal(selectedOption) {
             console.error(xhr.responseText);
         }
     });
-	
-	
 }
 
 function gettotal() {
@@ -1231,7 +1235,6 @@ $.ajax({
     success: function(response) {
         // Handle the success response from the server
         console.log(response);
-		
     },
     error: function(xhr, status, error) {
         // Handle errors
@@ -1276,7 +1279,6 @@ $.ajax({
             console.log('Total capacity not found in local storage.');
         }
     }, 500);
-	
 	
 
 }
@@ -1339,73 +1341,6 @@ nextOption = `${startDate},${formattedNextSunday}`;
 
   return nextOption;
 }
-	
-document.addEventListener('DOMContentLoaded', function () {
-    // Function to disable dropdowns initially
-    disableDropdowns();
-
-
-    // Add event listener to the toggle switch
-    document.querySelector('.switch input').addEventListener('change', function () {
-        var isEditable = this.checked;
-		 editing(isEditable);
-    });
-});
-
-// Function to disable dropdowns initially
-function disableDropdowns() {
-	console.log('disable drops');
-    var cells = document.querySelectorAll('.editable');
-	var isEditable=document.querySelector('.switch input').checked;
-	//console.log(isEditable);
-    cells.forEach(function (cell) {
-        var dropdowns = cell.querySelectorAll('select');
-        dropdowns.forEach(function (dropdown) {
-            dropdown.disabled = !isEditable;
-        });
-    });
-}
-
-function runAfterContentLoads() {
-    // Check if the content is loaded
-    if (document.readyState === 'complete') {
-        // If the content is fully loaded, call your function
-        disableDropdowns();
-    } else {
-        // If not, wait for the 'load' event and then call your function
-        window.addEventListener('load', disableDropdowns);
-    }
-}
-
-runAfterContentLoads();
-function editing(isEditable){
-	
-	
-        var cells = document.querySelectorAll('.editable');
-        cells.forEach(function (cell) {
-            // Set contentEditable for regular cells
-            cell.contentEditable = isEditable;
-
-            // Disable dropdowns if they are select elements within descendants
-            var dropdowns = cell.querySelectorAll('select');
-            dropdowns.forEach(function (dropdown) {
-                dropdown.disabled = !isEditable;
-            });
-        });
-
-        if (isEditable) {
-            // Enable editing, so bind the blur event for AJAX calls
-            $('#contentContainer').on('blur', '.editable', function () {
-                // Your existing blur event handling code for AJAX calls
-                // ...
-            });
-        } else {
-            // Disable editing, so unbind the blur event
-            $('#contentContainer').off('blur', '.editable');
-        }
-}
-
-
 	
 	
 $(document).ready(function() {
@@ -1548,8 +1483,7 @@ function disable1stOption(first,selected){
     populateYears();
     updateMonthsAndWeeks();
 
-
-
+/*
 // Event listener for the burger menu
 const burger = document.getElementById("Toggle");
 const navMenu = document.getElementById("menu1");
@@ -1575,7 +1509,7 @@ burger.addEventListener("change", () => {
 		});
     }
 });
-
+*/
 let errorCount = 0; // Initialize the error count
 
 function addNewJob() {

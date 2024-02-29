@@ -128,7 +128,7 @@ thead th {
   z-index:7;
     }
     .highlighted {
-        background-color:#708090;
+       background-color:#fff;
     }
 tbody td {
   overflow-x: hidden;
@@ -196,9 +196,12 @@ position: sticky;
 	 margin-left:-0.5%;
 
 	}
-	#search-button{
-		margin-left:-48%;
-		margin-right:45%;
+	#search{
+	
+	width:10%;
+    border: 1px solid;
+    border-radius: 4px;
+    padding: 8px 20px;
 	}
 
 /* Responsive Styling */
@@ -278,9 +281,9 @@ while ($record = mysqli_fetch_assoc($result)) {
 echo "</select>
       </div>
 	  		
-		<label for='search'>Search:</label>
-    <input type='text' id='search' onkeyup='searchItem1()' placeholder='Search'>
-    <button id='search-button' onclick='searchItem1()'>Search</button>";
+		<label for='search'>Search:</label><br>
+    <input type='text' id='search' onkeyup='searchItem1()' placeholder='Search for items'><br>
+    ";
  echo"Value:<strong><h3 id=\"totalval\"></h3></strong>";
         echo "</div><table id=\"lbt\" border='2'>
                 <thead>
@@ -698,6 +701,7 @@ if (category === 'HYMOD') {
 } else {
     categoryTotal = th + hm;
 }
+categoryTotal = categoryTotal.toFixed(2);
 		document.getElementById("totalval").innerHTML = "$"+categoryTotal;
 
 
@@ -758,7 +762,7 @@ var th=Number('<?php echo round($tophattotal,2); ?>');
         printWindow.print();
     }
 
-    function printTable2(total) {
+    function printTable2() {
         var table = document.getElementById("lbt2").cloneNode(true);
         var categoryTotal = Number('<?php echo round($total,2); ?>');
         var printWindow = window.open('', '', 'width=800,height=600');
@@ -770,14 +774,13 @@ var th=Number('<?php echo round($tophattotal,2); ?>');
         printWindow.document.write('<h2>Available Stock</h2>');
         printWindow.document.write('<h3>Total: $' + categoryTotal + '</h3>');
         printWindow.document.write(table.outerHTML);
-        printWindow.document.write(categoryTotalsTable.outerHTML);
+        printWindow.document.write(categoryTotal.outerHTML);
         printWindow.document.write('</body></center></html>');
         printWindow.document.close();
         printWindow.print();
     }
     function printTable3() {
         var table = document.getElementById("lbt3").cloneNode(true);
-
         var printWindow = window.open('', '', 'width=800,height=600');
         printWindow.document.open();
         printWindow.document.write('<html><head><title>Print Table</title>');
@@ -841,15 +844,15 @@ function searchItem1() {
     table = document.getElementById("lbt");
     tr = table.getElementsByTagName("tr");
 
-    // Reset the display property for all rows
-    for (i = 0; i < tr.length; i++) {
-        tr[i].style.display = "";
-    }
-
     // Loop through all table rows
     for (i = 0; i < tr.length; i++) {
-        var rowVisible = false;
+        // Skip header row
+        if (tr[i].cells[0].nodeName === "TH") {
+            continue;
+        }
+
         td = tr[i].getElementsByTagName("td");
+        var rowVisible = false;
 
         // Loop through all table cells in the row
         for (j = 0; j < td.length; j++) {
@@ -863,9 +866,7 @@ function searchItem1() {
         }
 
         // Display or hide the row based on whether any cell matched the search filter
-        if (!rowVisible) {
-            tr[i].style.display = "none";
-        }
+        tr[i].style.display = rowVisible ? "" : "none";
     }
 }
 

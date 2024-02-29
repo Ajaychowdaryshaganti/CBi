@@ -6,6 +6,7 @@
 </head>
 <style>
 #fitterinfo{
+	
 	margin-left:88.1%;
 	margin-top:1%;
 	color:black;
@@ -14,7 +15,7 @@
 	background-color:#FFFCF9;
 }
 #calsinfo{
-	margin-top:-3%;
+	margin-top:3%;
 	width:15%;
 	color:black;
 	font-size: 20px;
@@ -57,7 +58,7 @@
                 $no_of_fitters = $row['nooffitters'];
                 $broughtfwd = $row['broughtfwd'];
 
-                echo "<div id='fitterinfo'>Fitter Capacity per day: <span id='daycap'>$day_capacity</span><br>";
+                echo "<div id='fitterinfo' hidden>Fitter Capacity per day: <span id='daycap'>$day_capacity</span><br>";
                 echo "No of Fitters Available: <span id='nooffitters'>$no_of_fitters</span></div>";
                 echo "<div id='calsinfo'>Hours brought forward: <span id='broughtfwd'>$broughtfwd</span><br>";
                 echo "Total Work Hours: <span id='workrem'></span><br>";

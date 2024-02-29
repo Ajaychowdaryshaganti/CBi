@@ -135,8 +135,18 @@ thead th {
     }
 tbody td {
   overflow-x: hidden;
+  font-size: 15px !important;
+}
+#purchaseorder {
+  width: auto !important;
+  padding:0;
+  font-size: 15px !important;
 }
 
+table tr td:last-child {
+    width: 100% !important;
+	 white-space: normal;
+}
 tbody td,
 thead th {
   padding: 10px;
@@ -288,7 +298,7 @@ include 'connection.php';
 $msg = '';
 $sql = "
   INSERT INTO reorderhmtp
-  SELECT BinLocation, PartName, PartNo, Category, Quantity AS Available, (Max-Quantity) AS Required, 0 AS Received, (Max-Quantity) AS BackOrder, 'To be Ordered' AS Status, 'NA' AS PurchaseOrder, NOW() AS LastUpdated, 'NA' AS Comments FROM tophathymod
+  SELECT BinLocation, PartName, PartNo,Supplier, Category, Quantity AS Available, (Max-Quantity) AS Required, 0 AS Received, (Max-Quantity) AS BackOrder, 'To be Ordered' AS Status, '' AS PurchaseOrder, NOW() AS LastUpdated, '' AS Comments FROM tophathymod
   WHERE PartNo NOT IN (
     SELECT PartNo FROM reorderhmtp
   ) AND Quantity <= Min
@@ -378,6 +388,7 @@ echo "</select>
     <th>Bin Location</th>
     <th>Description</th>
     <th>Part Number</th>
+    <th>Supplier</th>
     <th hidden>Category</th>
     <th>Available Quantity</th>
     <th>Required Quantity</th>
@@ -410,6 +421,8 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
     <td>{$record['ModifiedBinLocation']}</td>
     <td>{$record['PartName']}</td>
     <td>{$record['PartNo']}</td>
+    <td>{$record['Supplier']}</td>
+
 <td hidden>{$record['Category']}</td>
     <td>{$record['Available']}</td>
     <td>
@@ -430,7 +443,7 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
     </select>
 </td>
 
-<td>
+<td id='purchaseorder'>
     <input type='text' 
            id='purchaseOrder1_$i1' 
            value='{$record['PurchaseOrder']}' 
@@ -442,7 +455,7 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
         <button id=\"no-fill\" onclick=\"promptUser1('{$PNo1[$i1]}',$BackOrder1[$i1])\">Partially Received</button>
     </td>
     <td>{$formattedTimestamp}</td>
-    <td>
+    <td id='comments'>
             <input type='text' id='comments1_$i1' value='{$record['Comments']}' onfocusout=\"updateCommentsUniversal(1, '$PNo1[$i1]', $i1)\"/>
     </td>
   </tr>";
@@ -476,7 +489,7 @@ include 'connection.php';
 $msg = '';
 $sql = "
   INSERT INTO reorder
-  SELECT BinLocation, PartName, PartNo, Category, Quantity AS Available, (Max-Quantity) AS Required, 0 AS Received, (Max-Quantity) AS BackOrder, 'To be Ordered' AS Status, 'NA' AS PurchaseOrder, NOW() AS LastUpdated, 'NA' AS Comments FROM stock
+  SELECT BinLocation, PartName, PartNo, Category, Quantity AS Available, (Max-Quantity) AS Required, 0 AS Received, (Max-Quantity) AS BackOrder, 'To be Ordered' AS Status, '' AS PurchaseOrder, NOW() AS LastUpdated, '' AS Comments FROM stock
   WHERE PartNo NOT IN (
     SELECT PartNo FROM reorder
   ) AND Quantity <= Min
@@ -603,7 +616,7 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
             <button id='no-fill' type='button' onclick=\"updatePurchaseOrder('$PNo2[$i2]', $i2)\">Update</button>
         </form>
     </td>-->
-	<td>
+<td id='purchaseorder'>
     <input type='text' 
            id='purchaseOrder2_$i2' 
            value='{$record['PurchaseOrder']}' 
@@ -614,7 +627,7 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
         <button id=\"no-fill\" onclick=\"promptUser('{$PNo2[$i2]}',$BackOrder2[$i2])\">Partially Received</button>
     </td>
     <td>{$formattedTimestamp}</td>
-    <td>
+    <td id='comments'>
             <input type='text' id='comments2_$i2' value='{$record['Comments']}' onfocusout=\"updateCommentsUniversal(2, '$PNo2[$i2]', $i2)\"/>
     </td>
   </tr>";
@@ -756,7 +769,7 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
             <button id='no-fill' type='button' onclick=\"updatePurchaseOrder3('$PNo3[$i3]', $i3)\">Update</button>
         </form>
         </td>-->
-	<td>
+<td id='purchaseorder'>
     <input type='text' 
            id='purchaseOrder3_$i3' 
            value='{$record['PurchaseOrder']}' 
@@ -767,7 +780,7 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
         <button id=\"no-fill\" onclick=\"promptUser3('{$PNo3[$i3]}',$BackOrder3[$i3])\">Partially Received</button>
     </td>
     <td>{$record['LastUpdated']}</td>
-    <td>
+    <td id='comments'>
             <input type='text' id='comments3_$i3' value='{$record['Comments']}' onfocusout=\"updateCommentsUniversal(3, '$PNo3[$i3]', $i3)\"/>
     </td>
 <td>
@@ -908,7 +921,7 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
             <button id='no-fill' type='button' onclick=\"updatePurchaseOrder4('$PNo4[$i4]', $i4)\">Update</button>
         </form>
         </td>-->
-	<td>
+<td id='purchaseorder'>
     <input type='text' 
            id='purchaseOrder4_$i4' 
            value='{$record['PurchaseOrder']}' 
@@ -919,7 +932,7 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
         <button id=\"no-fill\" onclick=\"promptUser4('{$PNo4[$i4]}',$BackOrder4[$i4])\">Partially Received</button>
     </td>
     <td>{$record['LastUpdated']}</td>
-    <td>
+    <td id='comments'>
             <input type='text' id='comments4_$i4' value='{$record['Comments']}' onfocusout=\"updateCommentsUniversal(4, '$PNo4[$i4]', $i4)\"/>
     </td>
 <td>
@@ -1061,7 +1074,7 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
             <button id='no-fill' type='button' onclick=\"updatePurchaseOrder5('$PNo5[$i5]', $i5)\">Update</button>
         </form>
         </td>-->
-	<td>
+	<td id='purchaseorder'>
     <input type='text' 
            id='purchaseOrder5_$i5' 
            value='{$record['PurchaseOrder']}' 
@@ -1072,7 +1085,7 @@ while ($record = mysqli_fetch_assoc($reorderResult)) {
         <button id=\"no-fill\" onclick=\"promptUser5('{$PNo5[$i5]}',$BackOrder5[$i5])\">Partially Received</button>
     </td>
     <td>{$record['LastUpdated']}</td>
-    <td>
+ <td id='comments'>
             <input type='text' id='comments5_$i5' value='{$record['Comments']}' onfocusout=\"updateCommentsUniversal(5, '$PNo5[$i5]', $i5)\"/>
     </td>
 <td>
@@ -1158,8 +1171,8 @@ function applyFilters1() {
 
   for (var i1 = 0; i1 < rows1.length; i1++) {
     var row1 = rows1[i1];
-    var categoryCell1 = row1.getElementsByTagName("td")[3];
-    var statusCell1 = row1.getElementsByTagName("td")[9];
+    var categoryCell1 = row1.getElementsByTagName("td")[4];
+    var statusCell1 = row1.getElementsByTagName("td")[10];
     var categoryText1 = categoryCell1.textContent || categoryCell1.innerText;
     var statusText1 = statusCell1.textContent || statusCell1.innerText;
     var showRow1 = true;
@@ -1245,6 +1258,17 @@ function fullOrderReceived1(partNo1, quantity1) {
 function updateStatusUniversal(tabNumber, partNo, rowIndex) {
     const statusSelect = document.getElementById('status' + tabNumber + '_' + rowIndex);
     const status = statusSelect.value;
+    console.log(status);
+
+    // Ask for confirmation if the status is 'To be Ordered'
+    if (status === 'To be Ordered') {
+        const confirmation = window.confirm("Are you sure you want to set the status to 'To be Ordered'?");
+
+        // If the user cancels the confirmation, exit the function
+        if (!confirmation) {
+            return;
+        }
+    }
 
     // Prepare the data to send
     const data = `tabNumber=${encodeURIComponent(tabNumber)}&partNo=${encodeURIComponent(partNo)}&status=${encodeURIComponent(status)}`;
@@ -1263,20 +1287,18 @@ function updateStatusUniversal(tabNumber, partNo, rowIndex) {
                 console.log("The message property is not set.");
             }
             if(response.success) {
-              statusSelect.style.color="green";
-              statusSelect.style.fontWeight = "bold";
-
-              
+                statusSelect.style.color="green";
+                statusSelect.style.fontWeight = "bold";
             } else {
-              statusSelect.style.color="red";
-              statusSelect.style.fontWeight = "bold";
+                statusSelect.style.color="red";
+                statusSelect.style.fontWeight = "bold";
             }
-			
             ////location.reload();
         }
     };
     xhr.send(data);
 }
+
 
 
 function refreshdata1() {
@@ -1350,7 +1372,7 @@ function updatePurchaseOrderUniversal(tabNumber, partNo, rowIndex) {
                 console.log("The message property is not set.");
             }
 			//alert(purchaseOrder);
-			if((purchaseOrder!='NA')&&(purchaseOrder!='na'))
+			if((purchaseOrder!='')&&(purchaseOrder!='na'))
 			{
             if(response.success) {
               purchaseOrderInput.style.color="green";
@@ -1388,7 +1410,7 @@ function updateCommentsUniversal(tabNumber, partNo, rowIndex) {
             } else {
                 console.log("The message property is not set.");
             }
-			if((comments!='NA')&&(comments!='na'))
+			if((comments!='')&&(comments!='na'))
 			{
             if(response.success) {
               commentsInput.style.color="green";
@@ -1410,7 +1432,7 @@ function printTable1() {
   var table = document.getElementById("lbt1");
   var windowContent = '<html><head><title>Print Table</title>';
   windowContent += '<style>' + getComputedStyle(table).cssText + '</style>';
-  windowContent += '<style>table { width: 100%; border-collapse: collapse; } input { text-align: center; border: none !important; padding-top:20px; font-size: 15px; font-family:Jost;	width:50%;	} th, td { text-align: center; border: 1px solid black; } th {background-color: #ff8a8a;height: 50px;} .no-print,#no-fill { display: none; }</style>';
+  windowContent += '<style>table { width: 100%; border-collapse: collapse; } input { text-align: center; border: none !important; padding-top:20px; font-size: 15px; font-family:Jost;	width:50%;	} th, td { text-align: center; border: 1px solid black; } th {background-color: #ff8a8a;height: 50px;} .no-print,#no-fill { display: none; } #purchaseorder { width:15%;}</style>';
   windowContent += '</head><body>';
 
   // Retrieve the table rows
@@ -1419,7 +1441,7 @@ function printTable1() {
     var cells = rows[i].cells;
     for (var j = cells.length - 1; j >= 0; j--) {
       // Check if the current cell index is 8 or 10
-      if (j === 8 || j === 10 || j===12) {
+      if (j === 9 || j === 11 || j===13) {
         // Add a class to exempt the column from printing
         cells[j].classList.add('no-print');
       }
@@ -1624,7 +1646,7 @@ function printTable() {
   var table = document.getElementById("lbt2");
   var windowContent = '<html><head><title>Print Table</title>';
   windowContent += '<style>' + getComputedStyle(table).cssText + '</style>';
-  windowContent += '<style>table { width: 100%; border-collapse: collapse; } input { text-align: center; border: none !important; padding-top:20px; font-size: 15px; font-family:Jost;	width:50%;	} th, td { text-align: center; border: 1px solid black; } th {background-color: #ff8a8a;height: 50px;} .no-print,#no-fill { display: none; }</style>';
+  windowContent += '<style>table { width: 100%; border-collapse: collapse; } input { text-align: center; border: none !important; padding-top:20px; font-size: 15px; font-family:Jost;	width:50%;	} th, td { text-align: center; border: 1px solid black; } th {background-color: #ff8a8a;height: 50px;} .no-print,#no-fill { display: none; } #purchaseorder { width:15%;}</style>';
   windowContent += '</head><body>';
 
   // Retrieve the table rows
@@ -1794,7 +1816,7 @@ function printTable3() {
   var table3 = document.getElementById("lbt3");
   var windowContent3 = '<html><head><title>Print Table</title>';
   windowContent3 += '<style>' + getComputedStyle(table3).cssText + '</style>';
-  windowContent3 += '<style>table { width: 100%; border-collapse: collapse; } input { text-align: center; border: none !important; padding-top:20px; font-size: 15px; font-family:Jost; width:50%;		} th, td { text-align: center; border: 1px solid black; } th {background-color: #ff8a8a;height: 50px;} .no-print,#no-fill { display: none; }</style>';
+  windowContent3 += '<style>table { width: 100%; border-collapse: collapse; } input { text-align: center; border: none !important; padding-top:20px; font-size: 15px; font-family:Jost; width:50%;		} th, td { text-align: center; border: 1px solid black; } th {background-color: #ff8a8a;height: 50px;} .no-print,#no-fill { display: none; }#purchaseorder { width:15%;}</style>';
   windowContent3 += '</head><body>';
 
   // Retrieve the table rows
@@ -1803,7 +1825,7 @@ function printTable3() {
     var cells3 = rows3[i3].cells;
     for (var j3 = cells3.length - 1; j3 >= 0; j3--) {
       // Check if the current cell index is 8 or 10
-      if (j3 === 7 || j3 === 9 || j3===11 || j3===14) {
+      if (j3 === 8 || j3 === 10|| j3===12 || j3===15) {
         // Add a class to exempt the column from printing
         cells3[j3].classList.add('no-print');
       }
@@ -1966,7 +1988,7 @@ function printTable4() {
   var table4 = document.getElementById("lbt4");
   var windowContent4 = '<html><head><title>Print Table</title>';
   windowContent4 += '<style>' + getComputedStyle(table4).cssText + '</style>';
-  windowContent4 += '<style>table { width: 100%; border-collapse: collapse; } input { text-align: center; border: none !important; padding-top:20px; font-size: 15px; font-family:Jost; width:50%;	} th, td { text-align: center; border: 1px solid black; } th {background-color: #ff8a8a;height: 50px;} .no-print,#no-fill { display: none; }</style>';
+  windowContent4 += '<style>table { width: 100%; border-collapse: collapse; } input { text-align: center; border: none !important; padding-top:20px; font-size: 15px; font-family:Jost; width:50%;	} th, td { text-align: center; border: 1px solid black; } th {background-color: #ff8a8a;height: 50px;} .no-print,#no-fill { display: none; }#purchaseorder { width:15%;}</style>';
   windowContent4 += '</head><body>';
 
   // Retrieve the table rows
@@ -2138,7 +2160,7 @@ function printTable5() {
   var table5 = document.getElementById("lbt5");
   var windowContent5 = '<html><head><title>Print Table</title>';
   windowContent5 += '<style>' + getComputedStyle(table5).cssText + '</style>';
-  windowContent5 += '<style>table { width: 100%; border-collapse: collapse; } input { text-align: center; border: none !important; padding-top:20px; font-size: 15px; font-family:Jost;	width:50%;	} th, td { text-align: center; border: 1px solid black; } th {background-color: #ff8a8a;height: 50px;} .no-print,#no-fill { display: none; }</style>';
+  windowContent5 += '<style>table { width: 100%; border-collapse: collapse; } input { text-align: center; border: none !important; padding-top:20px; font-size: 15px; font-family:Jost;	width:50%;	} th, td { text-align: center; border: 1px solid black; } th {background-color: #ff8a8a;height: 50px;} .no-print,#no-fill { display: none; }#purchaseorder { width:15%;}</style>';
   windowContent5 += '</head><body>';
 
   // Retrieve the table rows

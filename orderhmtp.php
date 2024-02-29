@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
     try {
         // Insert a new record
-        $insertQuery = "INSERT INTO reorderhmtp (BinLocation, PartName, PartNo, Category,Available, Required, BackOrder, PurchaseOrder, Comments)
-        SELECT BinLocation, PartName, ?, Category,Quantity, ?, (? - 0), 'NA', 'NA' FROM tophathymod WHERE PartNo = ?";
+        $insertQuery = "INSERT INTO reorderhmtp (BinLocation, PartName,supplier, PartNo, Category,Available, Required, BackOrder, PurchaseOrder, Comments)
+        SELECT BinLocation, PartName,supplier, ?, Category,Quantity, ?, (? - 0), 'NA', 'NA' FROM tophathymod WHERE PartNo = ?";
         $insertStatement = mysqli_prepare($conn, $insertQuery);
         mysqli_stmt_bind_param($insertStatement, 'siss', $partno, $required, $required, $partno);
         mysqli_stmt_execute($insertStatement);

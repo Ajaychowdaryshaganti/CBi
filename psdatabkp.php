@@ -23,23 +23,22 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-		
-
+	
 		
 		span {
 		font-weight: bold;}
 		.drops1{
 			
-			max-width:120%;
+			max-width:90%;
 	}		.drops2{
 			
 			max-width:70%;
 	}		.drops3{
 			
-			max-width:120%;
+			max-width:90%;
 	}		.drops4{
 			
-			max-width:500px;
+			max-width:130%;
 	}
 	table select{
 		margin:0px !important;
@@ -101,11 +100,6 @@
 
 		
     </style>
-
-
-
-
-
 </head>
 <body>
     <?php
@@ -137,20 +131,10 @@ try {
             echo "<table border='1' id=\"lbt\" cellspacing='0'>";
             echo "<tr><strong><th>SEL</th><th>SALES ORDER</th><th>DRAWING NO</th><th>CUSTOMER</th><th>DESCRIPTION</th><th>HRS</th><th>ESC
 DATE</th><th>ENC DATE</th><th>PART AVA</th><th>ETD</th><th>COMP %</th><th>REM HRS</th><th>FITTER1</th><th>MANAGER</th><th>STATUS</th><th>TYPE</th><th>COMMENTS1</th><th>COMMENTS2</th><th>LAST UPDATED</th><th>LAST UPDATE BY</th><th>FITTER2</th><th>FITTER3</th></strong></tr>";
-				
+
             while ($row = $result->fetch_assoc()) {
                 $formattedTimestamp = date('d/m 	H:i', strtotime($row['LastUpdated']));
 				$status = $row['currentstate'];
-				
-								$partavailability = trim(strtolower($row['partavailability']));
-				$encdate = trim(strtolower($row['encdate']));
-				$escdate = trim(strtolower($row['escdate']));
-				
-				if ($partavailability === 'yes' && $encdate === 'yes' && $escdate === 'yes') {
-					$isready = true;
-				} else {
-					$isready = false;
-				}
 				$color = ''; // Initialize color variable
 				if ($status == 'InProgress') {
               $color = '#ffff00'; // Yellow color for InProgress
@@ -160,34 +144,26 @@ DATE</th><th>ENC DATE</th><th>PART AVA</th><th>ETD</th><th>COMP %</th><th>REM HR
 				$color = '#04b0f0'; // Cyan color for Completed
 				} elseif ($status == 'Tested') {
 				$color = '#00ff80'; // Green color for Tested
-				} elseif ($status == 'Paused') {
-				$color = '#ffaa80'; // Green color for Tested
+				} elseif ($status == 'Not Assigned') {
+				$color = '#ffffff'; // White color for Not Assigneds
 				}
-				elseif (($status == 'Not Assigned' ) && ($row['type']=='HYMOD') && $isready) {
-					//echo'2';
-                    $color = '#D3D3D3'; //b3f0ff
-                }
-				elseif (($status == 'Not Assigned' ) && $isready) {
-					//echo'1';
-                    $color = '#b3f0ff'; //b3f0ff
-                }
                 echo "<tr style='background-color: $color;'>";
-				echo "<td id=\"checkbox\" "; /*contenteditable='false'*/ echo " class='editable1' style='background-color:#fff !important'><input type='checkbox' name='selectedJobs[]'  value='" . $row['jobid'] . "' data-columnname='checkbk'></td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='jobid'>" . $row['jobid'] . "</td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='drawingno' id='dno'>" . $row['drawingno'] . "</td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='customer'>" . $row['customer'] . "</td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='description'>" . $row['description'] . "</td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='allocatedhrs'>" . $row['allocatedhrs'] . "</td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='escdate'>" . $row['escdate'] . "</td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='encdate'>" . $row['encdate'] . "</td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='partavailability'>" . $row['partavailability'] . "</td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='etd'>" . $row['etd'] . "</td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='completionrate'>" . $row['completionrate'] . "%</td>";
-                echo "<td "; /*contenteditable='false'*/ echo " class='editable1' data-jobid='" . $row['jobid'] . "' data-columnname='remaininghrs'>" . $row['remaininghrs'] . "</td>";
+				echo "<td id=\"checkbox\" contenteditable='false' class='editable' style='background-color:#fff !important'><input type='checkbox' name='selectedJobs[]'  value='" . $row['jobid'] . "' data-columnname='checkbk'></td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='jobid'>" . $row['jobid'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='drawingno' id='dno'>" . $row['drawingno'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='customer'>" . $row['customer'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='description'>" . $row['description'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='allocatedhrs'>" . $row['allocatedhrs'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='escdate'>" . $row['escdate'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='encdate'>" . $row['encdate'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='partavailability'>" . $row['partavailability'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='etd'>" . $row['etd'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='completionrate'>" . $row['completionrate'] . "%</td>";
+                echo "<td contenteditable='false' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='remaininghrs'>" . $row['remaininghrs'] . "</td>";
 				                // Fetch fitter names from the 'fitters' table
                 $fitterSql = "SELECT fittername FROM fitters";
                 $fitterResult = $conn->query($fitterSql);
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='fitter1' style='width:5%;'>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='fitter1'>";
                 echo "<select class=\"drops1\" id=\"fitter1" . $row['jobid'] . "\" name=\"fitter1\">";
                 while ($fitterRow = $fitterResult->fetch_assoc()) {
                     $selected = ($fitterRow['fittername'] == $row['fitter1']) ? "selected" : "";
@@ -200,7 +176,7 @@ DATE</th><th>ENC DATE</th><th>PART AVA</th><th>ETD</th><th>COMP %</th><th>REM HR
                 $managerSql = "SELECT name FROM managers";
                 $managerResult = $conn->query($managerSql);
 
-				echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='projectmanager'>";
+				echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='projectmanager'>";
 				echo "<select class=\"drops2\" id=\"projectmanager" . $row['jobid'] . "\" name=\"projectmanager\">";
 				while ($managerRow = $managerResult->fetch_assoc()) {
 					$managerName = $managerRow['name'];
@@ -213,9 +189,9 @@ DATE</th><th>ENC DATE</th><th>PART AVA</th><th>ETD</th><th>COMP %</th><th>REM HR
 
 				
 								// For the "currentstate" column
-				echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='currentstate' style='width:6%;'>";
+				echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='currentstate'>";
 				echo "<select class=\"drops3\" id=\"currentstate" . $row['jobid'] . "\" name=\"currentstate\">";
-				$statusOptions = ["Not Assigned", "InProgress", "Assigned", "Completed", "Tested","Paused"];
+				$statusOptions = ["NotAssigned", "InProgress", "Assigned", "Completed", "Tested"];
 				foreach ($statusOptions as $option) {
 					$selected = ($option == $row['currentstate']) ? "selected" : "";
 					echo "<option value=\"$option\" $selected>$option</option>";
@@ -225,9 +201,9 @@ DATE</th><th>ENC DATE</th><th>PART AVA</th><th>ETD</th><th>COMP %</th><th>REM HR
 
 
                 // Add "TYPE" dropdown with predefined options
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='type' style='width:4.5%;'>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='type'>";
                 echo "<select class=\"drops4\" id=\"type" . $row['jobid'] . "\" name=\"type\">";
-                $typeOptions = ["HYMOD", "ADVD", "ADVD+", "GMP", "HPR", "HPS","PolyPillar","Other"];
+                $typeOptions = ["HYMOD", "ADVD", "ADVD+", "GMP", "HPR", "HPS"];
                 foreach ($typeOptions as $option) {
                     $selected = ($option == $row['type']) ? "selected" : "";
                     echo "<option value=\"$option\" $selected>$option</option>";
@@ -235,15 +211,15 @@ DATE</th><th>ENC DATE</th><th>PART AVA</th><th>ETD</th><th>COMP %</th><th>REM HR
                 echo "</select>";
                 echo "</td>";
 
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='comments'>" . $row['comments'] . "</td>";
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='comments2'>" . $row['comments2'] . "</td>";
-							echo "<td "; /*contenteditable='false'*/ echo " class='editable1' data-jobid='" . $row['jobid'] . "' data-columnname='LastUpdated'>" . $formattedTimestamp . "</td>";
-            echo "<td "; /*contenteditable='false'*/ echo " class='editable1' data-jobid='" . $row['jobid'] . "' data-columnname='lastupdatedby'>" . $row['lastupdatedby'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='comments'>" . $row['comments'] . "</td>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='comments2'>" . $row['comments2'] . "</td>";
+							echo "<td contenteditable='false' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='LastUpdated'>" . $formattedTimestamp . "</td>";
+            echo "<td contenteditable='false' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='lastupdatedby'>" . $row['lastupdatedby'] . "</td>";
 
                 $fitterSql = "SELECT fittername FROM fitters";
                 $fitterResult = $conn->query($fitterSql);
 
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='fitter2' style='width:5%;'>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='fitter2'>";
                 echo "<select class=\"drops1\" id=\"fitter2" . $row['jobid'] . "\" name=\"fitter2\">";
                 while ($fitterRow = $fitterResult->fetch_assoc()) {
                     $selected = ($fitterRow['fittername'] == $row['fitter2']) ? "selected" : "";
@@ -253,7 +229,7 @@ DATE</th><th>ENC DATE</th><th>PART AVA</th><th>ETD</th><th>COMP %</th><th>REM HR
                 echo "</td>";
                 $fitterSql = "SELECT fittername FROM fitters";
                 $fitterResult = $conn->query($fitterSql);
-                echo "<td "; /*contenteditable='true'*/ echo " class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='fitter3' style='width:5%;'>";
+                echo "<td contenteditable='true' class='editable' data-jobid='" . $row['jobid'] . "' data-columnname='fitter3'>";
                 echo "<select class=\"drops1\" id=\"fitter3" . $row['jobid'] . "\" name=\"fitter3\">";
                 while ($fitterRow = $fitterResult->fetch_assoc()) {
                     $selected = ($fitterRow['fittername'] == $row['fitter3']) ? "selected" : "";
@@ -268,7 +244,7 @@ DATE</th><th>ENC DATE</th><th>PART AVA</th><th>ETD</th><th>COMP %</th><th>REM HR
 				$totalworkhrs=$totalworkhrs+$row['allocatedhrs'];
             }
 
-            echo "<tr id='lastrow'><td></td><td></td><td colspan='3' style='text-align: right;'>Total Work Hrs:</td><td id='wrkhrs'>$totalworkhrs</td><td></td><td></td><td  colspan='3' style='text-align: right;'>Total Rem Hrs:</td><td id='remhrs'>$totalremhrs</td></tr></table>";
+            echo "<tr id='lastrow'><td></td><td></td><td></td><td></td><td style='text-align: right;'>Total Work Hrs:</td><td id='wrkhrs'>$totalworkhrs</td><td></td><td></td><td  colspan='3' style='text-align: right;'>Total Rem Hrs:</td><td id='remhrs'>$totalremhrs</td></tr></table>";
 			
         } else {
                 echo '<section class="page_404">

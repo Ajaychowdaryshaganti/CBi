@@ -102,7 +102,7 @@ try {
         throw new Exception("<h3>Connection failed: " . mysqli_connect_error(). "</h3>");
     }
 } catch (Exception $e) {
-    $msg = " <h4>Error: " . $e->getMessage(). "</h4><h5> If you are trying to update this fitter info <a href=\"http://3.231.173.240/CBi/manageusers2-edit.php\">Clickme</a></h4>";
+    $msg = " <h4>Error: " . $e->getMessage(). "</h4><h5> If you are trying to update this fitter info <a href=\"http://stockmanagement.cbi.local/manageusers2-edit.php\">Clickme</a></h4>";
 }
 
 // ...

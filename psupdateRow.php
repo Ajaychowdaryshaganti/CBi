@@ -13,29 +13,54 @@ $newValue = $_POST['newValue'];
 try {
     if ($conn) {
         // Escape the user input to prevent SQL injection
-        $jobID = mysqli_real_escape_string($conn, $jobID);
-        $columnName = mysqli_real_escape_string($conn, $columnName);
-        $newValue = mysqli_real_escape_string($conn, $newValue);
+//$jobID = mysqli_real_escape_string($conn, $jobID);
+//$columnName = mysqli_real_escape_string($conn, $columnName);
+//$newValue = mysqli_real_escape_string($conn, $newValue);
 
-        // Prepare the SQL statement with placeholders for updating the main table (jobsnew)
-        $updateQuery = "UPDATE jobsnew SET $columnName = ?, lastupdated = NOW(), lastupdatedby = ?  WHERE jobid = ?";
-        $statement = mysqli_prepare($conn, $updateQuery);
 
-        if ($statement) {
-            // Bind the parameters to the statement
-            mysqli_stmt_bind_param($statement, 'sss', $newValue,$updateby, $jobID);
 
-            // Execute the statement
-            $result = mysqli_stmt_execute($statement);
+// Initialize the completion rate to null
+$completionRate = null;
 
-            if ($result) {
-                // Record updated successfully, now insert into psupdates table
-                $insertQuery = "INSERT INTO psupdates (updatedby, jobId, feildname, newval, LastUpdated,action) VALUES (?, ?, ?, ?, NOW(),'Edited')";
-                $insertStatement = mysqli_prepare($conn, $insertQuery);
+// Check if columnName is "currentstate" and newValue is "Completed"
+if ($columnName === "currentstate" && ($newValue === "Completed" || $newValue === "Tested")){
+    //$newValue = "Completed"; // Ensure the new value is "Completed"
+    $completionRate = 100; // Set completion rate to 100
+}
 
-                if ($insertStatement) {
-                    // Bind the parameters to the insert statement
-                    mysqli_stmt_bind_param($insertStatement, 'ssss', $updateby, $jobID, $columnName, $newValue);
+// Prepare the SQL statement with placeholders for updating the main table (jobsnew)
+$updateQuery = "UPDATE jobsnew SET $columnName = ?, lastupdated = NOW(), lastupdatedby = ?";
+
+// Check if completionRate should be updated
+if ($completionRate !== null) {
+    $updateQuery .= ", completionrate = ?";
+}
+
+$updateQuery .= " WHERE jobid = ?";
+$statement = mysqli_prepare($conn, $updateQuery);
+
+if ($statement) {
+    // Bind the parameters to the statement
+    if ($completionRate !== null) {
+        mysqli_stmt_bind_param($statement, 'ssis', $newValue, $updateby, $completionRate, $jobID);
+    } else {
+        mysqli_stmt_bind_param($statement, 'sss', $newValue, $updateby, $jobID);
+    }
+
+    // Execute the statement
+    $result = mysqli_stmt_execute($statement);
+
+    if ($result) {
+        // Record updated successfully, now insert into psupdates table
+        $insertQuery = "INSERT INTO psupdates (updatedby, jobId, feildname, newval, LastUpdated, action) VALUES (?, ?, ?, ?, NOW(), 'Edited')";
+        $insertStatement = mysqli_prepare($conn, $insertQuery);
+
+        if ($insertStatement) {
+            // Bind the parameters to the insert statement
+            mysqli_stmt_bind_param($insertStatement, 'ssss', $updateby, $jobID, $columnName, $newValue);
+
+            // Execute the insert statement
+            $insertResult = mysqli_stmt_execute($insertStatement);
 
                     // Execute the insert statement
                     $insertResult = mysqli_stmt_execute($insertStatement);
